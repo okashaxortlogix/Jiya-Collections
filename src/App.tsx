@@ -1,130 +1,638 @@
 import { useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
 import './App.css'
 
-type Product = {
-  id: number
-  name: string
-  category: string
-  price: number
-  oldPrice?: number
-  color: string
-  fabric: string
-  stock: number
-  image: string
-  tag?: string
-}
-type Overlay = 'cart' | 'account' | 'custom' | 'filter' | 'admin' | null
-type AdminTab = 'overview' | 'products' | 'orders' | 'customers' | 'discounts' | 'shipping' | 'ai' | 'settings'
+// Types
+import type {
+  Product,
+  CartItem,
+  Order,
+  Address,
+  BespokeRequest,
+  Currency,
+  Toast,
+  ModalType,
+  PromoCode,
+  UserProfile,
+  SizingProfile,
+  SizeOption,
+} from './types'
 
-const initialProducts: Product[] = [
-  { id: 1, name: 'Noor Lawn Set', category: 'Ready to wear', price: 4890, oldPrice: 6200, color: 'Ivory', fabric: 'Premium lawn', stock: 12, tag: 'Bestseller', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=85' },
-  { id: 2, name: 'Sahar Embroidered', category: 'New arrivals', price: 7250, color: 'Pistachio', fabric: 'Cotton net', stock: 6, tag: 'New', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=85' },
-  { id: 3, name: 'Ayla Silk Abaya', category: 'Abayas', price: 8950, oldPrice: 10400, color: 'Midnight', fabric: 'Silk blend', stock: 2, tag: '− 14%', image: 'https://images.unsplash.com/photo-1605763240000-7e93b172d754?auto=format&fit=crop&w=900&q=85' },
-  { id: 4, name: 'Meher Cotton Edit', category: 'Ready to wear', price: 3990, color: 'Terracotta', fabric: 'Textured cotton', stock: 9, image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=85' },
-]
+// Initial Data
+import {
+  currencyRates,
+  initialProducts,
+  categories,
+  heroSlides,
+  initialOrders,
+  initialBespokeRequests,
+  initialAddresses,
+  initialUserProfile,
+  initialSizingProfile,
+  initialPromoList,
+  calculateSizePrice,
+} from './data/initialData'
 
-const categories = ['All pieces', 'Ready to wear', 'Abayas', 'New arrivals']
-const adminTabs: { id: AdminTab; label: string }[] = [
-  { id: 'overview', label: 'Overview' }, { id: 'products', label: 'Products' }, { id: 'orders', label: 'Orders' },
-  { id: 'customers', label: 'Customers' }, { id: 'discounts', label: 'Discounts' }, { id: 'shipping', label: 'Shipping' },
-  { id: 'ai', label: 'AI assistant' }, { id: 'settings', label: 'Settings' },
-]
+// Common Components
+import { AnnouncementBar } from './components/common/AnnouncementBar'
+import { Header } from './components/common/Header'
+import { Footer } from './components/common/Footer'
+import { ToastContainer } from './components/common/ToastContainer'
 
-function App() {
-  const [products, setProducts] = useState(initialProducts)
+// Storefront Components
+import { HeroSection } from './components/storefront/HeroSection'
+import { BrandPillars } from './components/storefront/BrandPillars'
+import { ProductGrid } from './components/storefront/ProductGrid'
+import { BespokeBanner } from './components/storefront/BespokeBanner'
+import { Testimonials } from './components/storefront/Testimonials'
+
+// Perfected Customer Portal & Dashboard
+import { CustomerDashboard } from './components/customer/CustomerDashboard'
+
+// Drawers & Modals
+import { CartDrawer } from './components/modals/CartDrawer'
+import { WishlistDrawer } from './components/modals/WishlistDrawer'
+import { FilterDrawer } from './components/modals/FilterDrawer'
+import { QuickViewModal } from './components/modals/QuickViewModal'
+import { CheckoutModal } from './components/modals/CheckoutModal'
+import { BespokeModal } from './components/modals/BespokeModal'
+import { SizeGuideModal } from './components/modals/SizeGuideModal'
+import { PolicyModal } from './components/modals/PolicyModal'
+import { ContactModal } from './components/modals/ContactModal'
+
+// AI & Admin
+import { StylistAssistant } from './components/ai/StylistAssistant'
+import { AdminStudio } from './components/admin/AdminStudio'
+import { AdminLoginModal } from './components/admin/AdminLoginModal'
+
+let nextToastCounter = 1
+let nextProductCounter = 200
+let nextAddressCounter = 300
+
+export default function App() {
+  // Store Branding & Currency
+  const [brandName, setBrandName] = useState('JIYA COLLECTIONS')
+  const [announcementText, setAnnouncementText] = useState(
+    'Complimentary delivery on all orders over Rs. 8,000 · Code EID2026 for 15% off'
+  )
+  const [currency, setCurrency] = useState<Currency>('PKR')
+
+  // Catalog & Filter State
+  const [products, setProducts] = useState<Product[]>(initialProducts)
   const [activeCategory, setActiveCategory] = useState('All pieces')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('Recommended')
-  const [wishlist, setWishlist] = useState<number[]>([])
-  const [cart, setCart] = useState<Product[]>([])
-  const [overlay, setOverlay] = useState<Overlay>(null)
-  const [adminTab, setAdminTab] = useState<AdminTab>('overview')
-  const [userTab, setUserTab] = useState('orders')
+  const [priceMax, setPriceMax] = useState<number>(20000)
+  const [inStockOnly, setInStockOnly] = useState(false)
+
+  // Cart & Wishlist State
+  const [cart, setCart] = useState<CartItem[]>([
+    { product: initialProducts[0], quantity: 1, size: 'M', unitPrice: initialProducts[0].price },
+  ])
+  const [wishlist, setWishlist] = useState<number[]>([3])
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; percent: number } | null>({
+    code: 'EID2026',
+    percent: 15,
+  })
+
+  // Customer Portal State
+  const [userProfile, setUserProfile] = useState<UserProfile>(initialUserProfile)
+  const [sizingProfile, setSizingProfile] = useState<SizingProfile>(initialSizingProfile)
+  const [orders, setOrders] = useState<Order[]>(initialOrders)
+  const [addresses, setAddresses] = useState<Address[]>(initialAddresses)
+  const [bespokeRequests, setBespokeRequests] = useState<BespokeRequest[]>(initialBespokeRequests)
+
+  // Modals & Assistant State
+  const [activeModal, setActiveModal] = useState<ModalType>(null)
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
-  const [assistantQuery, setAssistantQuery] = useState('')
-  const [assistantReply, setAssistantReply] = useState('')
-  const [newsletterMessage, setNewsletterMessage] = useState('')
-  const [customMessage, setCustomMessage] = useState('')
-  const [brandName, setBrandName] = useState('JIYA COLLECTIONS')
-  const [shippingRate, setShippingRate] = useState('250')
-  const [vipDiscount, setVipDiscount] = useState('15')
-  const [aiGreeting, setAiGreeting] = useState('Hi, I am Jiya.')
-  const [newProductName, setNewProductName] = useState('')
+  const [promoList, setPromoList] = useState<PromoCode[]>(initialPromoList)
 
+  // Toast System
+  const [toasts, setToasts] = useState<Toast[]>([])
+
+  const showToast = (message: string, type: Toast['type'] = 'success') => {
+    const id = ++nextToastCounter
+    setToasts((prev) => [...prev, { id, message, type }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 3200)
+  }
+
+  // Price Conversion Formatter
+  const formatPrice = (pkrAmount: number) => {
+    const info = currencyRates[currency]
+    const converted = pkrAmount * info.rate
+    const formatted = Math.round(converted).toLocaleString()
+    return info.prefix ? `${info.symbol}${formatted}` : `${formatted} ${info.symbol}`
+  }
+
+  // Filter & Search Logic
   const visibleProducts = useMemo(() => {
-    const filtered = products.filter((product) => {
-      const categoryMatch = activeCategory === 'All pieces' || product.category === activeCategory
-      const searchMatch = !search.trim() || `${product.name} ${product.color} ${product.fabric}`.toLowerCase().includes(search.toLowerCase().trim())
-      return categoryMatch && searchMatch
+    return products
+      .filter((p) => {
+        const catMatch = activeCategory === 'All pieces' || p.category === activeCategory
+        const q = search.toLowerCase().trim()
+        const searchMatch =
+          !q ||
+          p.name.toLowerCase().includes(q) ||
+          p.color.toLowerCase().includes(q) ||
+          p.fabric.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+        const priceMatch = p.price <= priceMax
+        const stockMatch = !inStockOnly || p.stock > 0
+        return catMatch && searchMatch && priceMatch && stockMatch
+      })
+      .sort((a, b) => {
+        if (sort === 'Price low to high') return a.price - b.price
+        if (sort === 'Price high to low') return b.price - a.price
+        if (sort === 'Newest') return b.id - a.id
+        if (sort === 'Rating') return b.rating - a.rating
+        return 0
+      })
+  }, [products, activeCategory, search, priceMax, inStockOnly, sort])
+
+  // Cart Totals
+  const cartSubtotal = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => acc + (item.unitPrice || item.product.price) * item.quantity,
+      0
+    )
+  }, [cart])
+
+  const discountAmount = useMemo(() => {
+    if (!appliedCoupon) return 0
+    return Math.round((cartSubtotal * appliedCoupon.percent) / 100)
+  }, [cartSubtotal, appliedCoupon])
+
+  const shippingCost = useMemo(() => {
+    if (cart.length === 0) return 0
+    if (cartSubtotal >= 8000) return 0
+    return 250
+  }, [cart, cartSubtotal])
+
+  const cartTotal = Math.max(0, cartSubtotal - discountAmount + shippingCost)
+  const freeShippingProgress = Math.min(100, Math.round((cartSubtotal / 8000) * 100))
+  const remainingForFreeShipping = Math.max(0, 8000 - cartSubtotal)
+
+  // Handlers
+  const scrollTo = (elementId: string) => {
+    setMobileMenuOpen(false)
+    const el = document.getElementById(elementId)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const addToCart = (
+    product: Product,
+    size: SizeOption = 'M',
+    quantity: number = 1,
+    unitPrice?: number
+  ) => {
+    const finalPrice = unitPrice ?? calculateSizePrice(product.price, size)
+    setCart((prev) => {
+      const idx = prev.findIndex((item) => item.product.id === product.id && item.size === size)
+      if (idx > -1) {
+        const updated = [...prev]
+        updated[idx] = {
+          ...updated[idx],
+          quantity: updated[idx].quantity + quantity,
+          unitPrice: finalPrice,
+        }
+        return updated
+      }
+      return [...prev, { product, quantity, size, unitPrice: finalPrice }]
     })
-    return [...filtered].sort((a, b) => sort === 'Price low to high' ? a.price - b.price : sort === 'Price high to low' ? b.price - a.price : sort === 'Newest' ? b.id - a.id : 0)
-  }, [activeCategory, products, search, sort])
+    showToast(`Added ${quantity}× ${product.name} (${size}) to your cart!`, 'cart')
+  }
 
-  const addToCart = (product: Product) => setCart((current) => [...current, product])
-  const toggleWishlist = (id: number) => setWishlist((current) => current.includes(id) ? current.filter((productId) => productId !== id) : [...current, id])
-  const closeOverlay = () => setOverlay(null)
-  const goTo = (target: string) => { setMobileMenuOpen(false); document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' }) }
-  const submitNewsletter = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setNewsletterMessage('You are on the list.'); }
-  const submitCustom = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setCustomMessage('Request saved. A design specialist will reply shortly.'); }
-  const askAssistant = (question: string) => { setAssistantQuery(question); setAssistantReply(question === 'Find my size' ? 'Share your height, usual size, and preferred fit. I will match you to the closest size guide.' : question === 'What works for Eid?' ? 'The Sahar Embroidered is a polished festive choice. It is available in Pistachio with 6 pieces currently in stock.' : 'I can compare fabric, fit, price, and current stock across the Jiya Collections edit.'); }
-  const submitAssistant = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); if (assistantQuery.trim()) askAssistant(assistantQuery.trim()); }
+  const updateCartQty = (index: number, delta: number) => {
+    setCart((prev) => {
+      const updated = [...prev]
+      const newQty = updated[index].quantity + delta
+      if (newQty <= 0) {
+        showToast(`Removed ${updated[index].product.name} from cart`, 'info')
+        return prev.filter((_, i) => i !== index)
+      }
+      updated[index].quantity = newQty
+      return updated
+    })
+  }
 
-  const updateProduct = (id: number, field: 'name' | 'price' | 'stock', value: string) => setProducts((current) => current.map((product) => product.id === id ? { ...product, [field]: field === 'name' ? value : Number(value) || 0 } : product))
-  const removeProduct = (id: number) => setProducts((current) => current.filter((product) => product.id !== id))
-  const addProduct = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const name = newProductName.trim()
-    if (!name) return
-    setProducts((current) => [...current, { id: Date.now(), name, category: 'New arrivals', price: 0, color: 'New colour', fabric: 'Fabric to be set', stock: 0, tag: 'Draft', image: '/hero.jpg' }])
-    setNewProductName('')
+  const removeFromCart = (index: number) => {
+    const item = cart[index]
+    setCart((prev) => prev.filter((_, i) => i !== index))
+    showToast(`Removed ${item.product.name} from cart`, 'info')
+  }
+
+  const toggleWishlist = (productId: number) => {
+    const product = products.find((p) => p.id === productId)
+    if (wishlist.includes(productId)) {
+      setWishlist((prev) => prev.filter((id) => id !== productId))
+      showToast(`Removed ${product?.name ?? 'item'} from saved wishlist`, 'info')
+    } else {
+      setWishlist((prev) => [...prev, productId])
+      showToast(`Saved ${product?.name ?? 'item'} to your wishlist!`, 'success')
+    }
+  }
+
+  const handleApplyCoupon = (code: string) => {
+    const clean = code.trim().toUpperCase()
+    const found = promoList.find((p) => p.code === clean && p.active)
+    if (found) {
+      setAppliedCoupon({ code: found.code, percent: found.discount })
+      showToast(`Coupon "${found.code}" applied! You saved ${found.discount}%`, 'success')
+    } else {
+      showToast('Invalid or expired coupon code. Try EID2026 or WELCOME10', 'info')
+    }
+  }
+
+  const handleRedeemVoucher = (pointsCost: number, discountAmountPkr: number, code: string) => {
+    if (userProfile.points >= pointsCost) {
+      setUserProfile((prev) => ({ ...prev, points: prev.points - pointsCost }))
+      setPromoList((prev) => [...prev, { code, discount: 20, active: true }])
+      setAppliedCoupon({ code, percent: 20 })
+      showToast(
+        `Redeemed ${pointsCost} points for ${formatPrice(discountAmountPkr)} voucher code "${code}"!`,
+        'success'
+      )
+    } else {
+      showToast(`You need at least ${pointsCost} points to redeem this voucher`, 'info')
+    }
   }
 
   return (
-    <main className="storefront">
-      <div className="announcement"><span>Complimentary delivery on orders over Rs. 8,000</span><span className="announcement-detail">Pakistan-wide · Easy returns</span></div>
-      <header className="site-header">
-        <button className="mobile-menu" aria-label="Open menu" onClick={() => setMobileMenuOpen((open) => !open)}>☰</button>
-        <button className="wordmark wordmark-button" onClick={() => goTo('#top')} aria-label="Go to Jiya Collections home">{brandName}<span>®</span></button>
-        <nav className={`main-nav ${mobileMenuOpen ? 'mobile-open' : ''}`} aria-label="Main navigation">
-          <button onClick={() => goTo('#shop')}>Shop</button><button onClick={() => goTo('#custom')}>Custom design</button><button onClick={() => goTo('#story')}>Our story</button>
-        </nav>
-        <div className="header-actions">
-          <label className="search-box"><span aria-hidden="true">⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search pieces" aria-label="Search pieces" /></label>
-          <button className="icon-button text-action" aria-label="Open account" onClick={() => setOverlay('account')}>Account</button>
-          <button className="icon-button bag-button text-action" aria-label="Open cart" onClick={() => setOverlay('cart')}>Bag <b>{cart.length}</b></button>
-        </div>
-      </header>
+    <div className="storefront-root">
+      {/* Universal Floating Toast Alerts */}
+      <ToastContainer toasts={toasts} />
 
-      <section className="hero" id="top"><div className="hero-copy"><p className="eyebrow">The everyday edit · 01</p><h1>Made for your <em>every day.</em></h1><p className="hero-description">Thoughtful modestwear, cut in Pakistan and made to move with the rhythm of your life.</p><button className="button button-dark" onClick={() => goTo('#shop')}>Explore the edit <span>↗</span></button><div className="hero-note"><span className="note-mark">✳</span><span>Designed in Lahore<br />Made for everywhere</span></div></div><div className="hero-image-wrap"><div className="hero-image" role="img" aria-label="Model wearing an ivory Jiya Collections outfit" /><span className="hero-stamp">{brandName}<br /><i>est. 2024</i></span></div></section>
-      <section className="marquee" aria-label="Jiya Collections values"><span>FORM · FUNCTION · FEELING</span><i>✳</i><span>FORM · FUNCTION · FEELING</span><i>✳</i><span>FORM · FUNCTION · FEELING</span></section>
-      <section className="trust-strip" aria-label="Jiya Collections promises"><div><span className="trust-number">01</span><div><strong>Designed here</strong><p>Thoughtfully made in Lahore</p></div></div><div><span className="trust-number">02</span><div><strong>Easy by design</strong><p>3-day returns and exchanges</p></div></div><div><span className="trust-number">03</span><div><strong>Here to help</strong><p>Real people, plus Jiya AI</p></div></div></section>
+      {/* Top Announcement Bar & Currency Selector */}
+      <AnnouncementBar
+        announcementText={announcementText}
+        currentCurrency={currency}
+        onCurrencyChange={(c) => {
+          setCurrency(c)
+          showToast(`Currency switched to ${c}`, 'info')
+        }}
+        onCopyPromo={(code) => {
+          navigator.clipboard?.writeText?.(code)
+          handleApplyCoupon(code)
+        }}
+      />
 
-      <section className="shop-section" id="shop"><div className="section-intro"><div><p className="eyebrow">Curated for now</p><h2>The {brandName.toLowerCase()} edit</h2></div><p className="section-copy">Pieces with a quiet point of view.<br />Easy to wear, hard to forget.</p></div><div className="category-row"><div className="category-tabs" role="tablist" aria-label="Product categories">{categories.map((category) => <button key={category} className={activeCategory === category ? 'active' : ''} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category}>{category}</button>)}</div><button className="filter-button" onClick={() => setOverlay('filter')}>Filter & sort <span>↘</span></button></div>
-        <div className="product-grid">{visibleProducts.map((product, index) => <article className="product-card" key={product.id}><div className="product-image-wrap"><img src={product.image} alt={product.name} loading={index > 1 ? 'lazy' : 'eager'} />{product.tag && <span className="product-tag">{product.tag}</span>}<button className={`wishlist-button ${wishlist.includes(product.id) ? 'saved' : ''}`} onClick={() => toggleWishlist(product.id)} aria-label={`${wishlist.includes(product.id) ? 'Remove' : 'Add'} ${product.name} ${wishlist.includes(product.id) ? 'from' : 'to'} wishlist`}>{wishlist.includes(product.id) ? '♥' : '♡'}</button><button className="quick-add" onClick={() => addToCart(product)}>Quick add <span>+</span></button></div><div className="product-meta"><div><h3>{product.name}</h3><p>{product.color} · {product.fabric}</p><small>{product.stock < 4 ? `Only ${product.stock} left` : 'Ready to ship'}</small></div><div className="product-price">{product.oldPrice && <del>Rs. {product.oldPrice.toLocaleString()}</del>}<strong>Rs. {product.price.toLocaleString()}</strong></div></div></article>)}</div>{visibleProducts.length === 0 && <p className="empty-state">No pieces found. Try another search.</p>}
-      </section>
+      {/* Sticky Luxury Header */}
+      <Header
+        brandName={brandName}
+        search={search}
+        onSearchChange={(q) => {
+          setSearch(q)
+          if (q.trim() && activeCategory !== 'All pieces') {
+            setActiveCategory('All pieces')
+          }
+        }}
+        onClearSearch={() => setSearch('')}
+        products={products}
+        onQuickView={(p) => {
+          setSelectedProduct(p)
+          setActiveModal('product')
+        }}
+        formatPrice={formatPrice}
+        wishlistCount={wishlist.length}
+        cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+        mobileMenuOpen={mobileMenuOpen}
+        onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
+        onScrollTo={scrollTo}
+        onOpenModal={(m) => setActiveModal(m)}
+        onCategorySelect={(cat) => setActiveCategory(cat)}
+      />
 
-      <section className="custom-banner" id="custom"><div className="custom-image" role="img" aria-label="Detail of custom embroidery" /><div className="custom-copy"><p className="eyebrow">Made for you</p><h2>A little more<br /><em>you.</em></h2><p>Bring us a feeling, a reference, a sketch. Our design team will help turn it into something you can keep.</p><button className="text-link" onClick={() => setOverlay('custom')}>Start a custom conversation <span>↗</span></button></div></section>
-      <section className="review-section"><div className="review-heading"><p className="eyebrow">From the Jiya Collections community</p><h2>Worn, loved,<br /><em>repeated.</em></h2></div><blockquote><span className="quote-mark">“</span><p>It is rare to find something that feels this considered and still works for an ordinary Tuesday. The Noor set has become my first choice.</p><footer><strong>Hira A.</strong><span>Verified purchase · Islamabad</span></footer></blockquote><div className="review-meta"><span>★★★★★</span><small>4.9 average from 86 reviews</small></div></section>
+      {/* Hero Showcase with Slide Navigation */}
+      <HeroSection
+        slides={heroSlides}
+        onExploreClick={() => scrollTo('shop')}
+        onBespokeClick={() => setActiveModal('custom')}
+      />
 
-      <footer id="story"><div className="footer-brand"><button className="wordmark wordmark-button" onClick={() => goTo('#top')}>{brandName}<span>®</span></button><p>Clothes that feel<br /><em>like you.</em></p></div><div className="footer-links"><div><p className="footer-label">Explore</p><button onClick={() => goTo('#shop')}>Shop all</button><button onClick={() => goTo('#custom')}>Custom design</button><button onClick={() => goTo('#story')}>Our story</button></div><div><p className="footer-label">Help</p><button onClick={() => setOverlay('filter')}>Shipping & returns</button><button onClick={() => setOverlay('custom')}>Size guide</button><button onClick={() => setOverlay('account')}>Contact us</button></div><div><p className="footer-label">Stay in the know</p><p className="newsletter-copy">New drops, thoughtful notes,<br />no noise.</p><form className="newsletter" onSubmit={submitNewsletter}><input placeholder="Your email address" aria-label="Your email address" type="email" required /><button aria-label="Subscribe">↗</button></form>{newsletterMessage && <small className="form-success">{newsletterMessage}</small>}</div></div><div className="footer-bottom"><span>© 2026 {brandName} Studio</span><span>Made with care in Pakistan</span><span>Instagram &nbsp; Pinterest</span></div></footer>
+      {/* Haute Couture Brand Pillars */}
+      <BrandPillars />
 
-      <button className={`assistant-trigger ${assistantOpen ? 'open' : ''}`} onClick={() => setAssistantOpen((open) => !open)} aria-label="Open Jiya AI shopping assistant"><span className="assistant-spark">✳</span><span>Ask {brandName}</span></button>
-      {assistantOpen && <aside className="assistant-panel" aria-label="Jiya AI shopping assistant"><div className="assistant-header"><div><span className="eyebrow">Your style guide</span><h3>{aiGreeting}</h3></div><button onClick={() => setAssistantOpen(false)} aria-label="Close assistant">×</button></div><p>{assistantReply || 'Ask me about fit, fabric, colours or finding a piece for your next occasion.'}</p><div className="assistant-suggestions"><button onClick={() => askAssistant('Find my size')}>Find my size</button><button onClick={() => askAssistant('What works for Eid?')}>What works for Eid?</button><button onClick={() => askAssistant('Compare bestsellers')}>Compare bestsellers</button></div><form className="assistant-input" onSubmit={submitAssistant}><input value={assistantQuery} onChange={(event) => setAssistantQuery(event.target.value)} placeholder="Ask anything..." aria-label="Ask Jiya" /><button aria-label="Send question">↗</button></form></aside>}
+      {/* Main Catalog & Shopping Grid */}
+      <ProductGrid
+        products={visibleProducts}
+        categories={categories}
+        activeCategory={activeCategory}
+        onSelectCategory={setActiveCategory}
+        onOpenFilterDrawer={() => setActiveModal('filter')}
+        search={search}
+        onClearSearch={() => setSearch('')}
+        priceMax={priceMax}
+        onResetPriceMax={() => setPriceMax(20000)}
+        inStockOnly={inStockOnly}
+        onToggleInStockOnly={() => setInStockOnly((v) => !v)}
+        onResetAllFilters={() => {
+          setActiveCategory('All pieces')
+          setSearch('')
+          setPriceMax(20000)
+          setInStockOnly(false)
+          showToast('All filters cleared', 'info')
+        }}
+        wishlist={wishlist}
+        onToggleWishlist={toggleWishlist}
+        onQuickView={(p) => {
+          setSelectedProduct(p)
+          setActiveModal('product')
+        }}
+        onQuickAdd={(p) => addToCart(p, 'M', 1)}
+        formatPrice={formatPrice}
+      />
 
-      {overlay === 'cart' && <aside className="drawer" aria-label="Shopping bag"><div className="drawer-head"><div><span className="eyebrow">Your selection</span><h2>Shopping bag</h2></div><button onClick={closeOverlay} aria-label="Close shopping bag">×</button></div>{cart.length === 0 ? <p className="drawer-empty">Your bag is waiting for something special.</p> : <>{cart.map((product, index) => <div className="bag-line" key={`${product.id}-${index}`}><img src={product.image} alt="" /><div><strong>{product.name}</strong><span>{product.color}</span><small>Rs. {product.price.toLocaleString()}</small></div><button onClick={() => setCart((current) => current.filter((_, itemIndex) => itemIndex !== index))} aria-label={`Remove ${product.name}`}>×</button></div>)}<div className="drawer-total"><span>Subtotal</span><strong>Rs. {cart.reduce((sum, product) => sum + product.price, 0).toLocaleString()}</strong></div><button className="drawer-primary" onClick={() => setOverlay('account')}>Continue to checkout <span>↗</span></button></>}</aside>}
+      {/* Bespoke Custom Atelier Showcase */}
+      <BespokeBanner onStartCustomDesign={() => setActiveModal('custom')} />
 
-      {overlay === 'account' && <section className="user-shell" aria-label="Customer dashboard"><aside className="user-sidebar"><div className="user-profile"><span className="profile-initial">H</span><div><strong>Hira Ahmed</strong><small>Islamabad · Silver 2</small></div></div>{[['orders', 'Orders'], ['wishlist', 'Wishlist'], ['addresses', 'Addresses'], ['loyalty', 'Loyalty progress'], ['notifications', 'Notifications']].map(([id, label]) => <button key={id} className={userTab === id ? 'active' : ''} onClick={() => setUserTab(id)}>{label}</button>)}<button className="user-admin-link" onClick={() => setOverlay('admin')}>Open admin studio ↗</button><button className="user-close" onClick={closeOverlay}>Close dashboard</button></aside><div className="user-content"><div className="user-topbar"><div><span className="eyebrow">Your Jiya account</span><h2>{userTab === 'orders' ? 'My orders' : userTab === 'wishlist' ? 'Saved pieces' : userTab === 'addresses' ? 'Saved addresses' : userTab === 'loyalty' ? 'Loyalty progress' : 'Notifications'}</h2></div><button onClick={closeOverlay} aria-label="Close customer dashboard">×</button></div>{userTab === 'orders' && <div className="dashboard-list"><div className="dashboard-order"><div><span className="status-pill">In production</span><strong>Order #JC-1048</strong><small>Placed 18 Aug 2026 · 2 items</small></div><b>Rs. 12,140</b></div><div className="dashboard-order"><div><span className="status-pill delivered">Delivered</span><strong>Order #JC-0981</strong><small>Delivered 03 Aug 2026 · 1 item</small></div><b>Rs. 4,890</b></div></div>}{userTab === 'wishlist' && <div className="dashboard-products">{products.filter((product) => wishlist.includes(product.id)).length === 0 ? <p className="dashboard-empty">Your saved pieces will appear here.</p> : products.filter((product) => wishlist.includes(product.id)).map((product) => <div key={product.id}><img src={product.image} alt="" /><span><strong>{product.name}</strong><small>Rs. {product.price.toLocaleString()}</small></span><button onClick={() => addToCart(product)}>Add to bag</button></div>)}</div>}{userTab === 'addresses' && <div className="dashboard-card"><span className="eyebrow">Default delivery address</span><h3>Hira Ahmed</h3><p>House 18, Street 4<br />F-7/2, Islamabad<br />Pakistan</p><button className="text-link">Edit address ↗</button></div>}{userTab === 'loyalty' && <div className="dashboard-card loyalty-card"><span className="eyebrow">Silver 2</span><h3>6 items to Silver 3</h3><div className="progress-track"><span /></div><p>18 eligible items purchased. Every 10 items moves you up one level.</p><button className="text-link">View loyalty benefits ↗</button></div>}{userTab === 'notifications' && <div className="dashboard-card notification-card"><div><strong>Order updates</strong><small>Email · WhatsApp</small></div><input type="checkbox" defaultChecked aria-label="Order updates notifications" /><div><strong>Special discounts</strong><small>Email only</small></div><input type="checkbox" defaultChecked aria-label="Special discount notifications" /><div><strong>Wishlist alerts</strong><small>Website only</small></div><input type="checkbox" aria-label="Wishlist alerts notifications" /></div>}</div></section>}
+      {/* Customer Testimonials & Reviews */}
+      <Testimonials />
 
-      {overlay === 'filter' && <aside className="modal" aria-label="Filter and sort"><div className="modal-head"><div><span className="eyebrow">Find your piece</span><h2>Filter & sort</h2></div><button onClick={closeOverlay} aria-label="Close filters">×</button></div><label className="field-label">Sort by<select value={sort} onChange={(event) => setSort(event.target.value)}><option>Recommended</option><option>Newest</option><option>Price low to high</option><option>Price high to low</option></select></label><label className="field-label">Category<select value={activeCategory} onChange={(event) => setActiveCategory(event.target.value)}>{categories.map((category) => <option key={category}>{category}</option>)}</select></label><button className="drawer-primary" onClick={closeOverlay}>Show {visibleProducts.length} pieces <span>↗</span></button></aside>}
+      {/* Comprehensive Haute Footer */}
+      <Footer
+        brandName={brandName}
+        onCategorySelect={(cat) => setActiveCategory(cat)}
+        onOpenModal={(m) => setActiveModal(m)}
+        onScrollTo={scrollTo}
+        onNewsletterSubscribe={() => showToast('Thank you for subscribing to our Gazette!', 'success')}
+      />
 
-      {overlay === 'custom' && <aside className="modal" aria-label="Custom design request"><div className="modal-head"><div><span className="eyebrow">Made for you</span><h2>Start a custom look</h2></div><button onClick={closeOverlay} aria-label="Close custom request">×</button></div><form className="custom-form" onSubmit={submitCustom}><label className="field-label">What are you imagining?<textarea required placeholder="Tell us about the outfit, colour, fabric or occasion..." /></label><div className="form-split"><label className="field-label">Budget<input placeholder="Rs. 0" /></label><label className="field-label">Required by<input type="date" /></label></div><button className="drawer-primary">Send request <span>↗</span></button>{customMessage && <p className="form-success">{customMessage}</p>}</form></aside>}
+      {/* Grounded Jiya AI Stylist Floating Assistant */}
+      <StylistAssistant
+        products={products}
+        isOpen={assistantOpen}
+        onToggle={() => setAssistantOpen((o) => !o)}
+        onAddToCart={(p) => addToCart(p, 'M', 1)}
+        onQuickView={(p) => {
+          setSelectedProduct(p)
+          setActiveModal('product')
+        }}
+        formatPrice={formatPrice}
+      />
 
-      {overlay === 'admin' && <section className="admin-shell" aria-label="Admin studio"><div className="admin-sidebar"><button className="admin-brand" onClick={() => setOverlay(null)}>{brandName}<span>ADMIN STUDIO</span></button>{adminTabs.map((tab) => <button key={tab.id} className={adminTab === tab.id ? 'active' : ''} onClick={() => setAdminTab(tab.id)}>{tab.label}</button>)}<button className="admin-close" onClick={() => setOverlay(null)}>Exit studio</button></div><div className="admin-content"><div className="admin-topbar"><div><span className="eyebrow">Control centre</span><h2>{adminTabs.find((tab) => tab.id === adminTab)?.label}</h2></div><button onClick={() => setOverlay(null)} aria-label="Close admin studio">×</button></div>{adminTab === 'overview' && <div className="admin-overview"><div className="metric-grid"><div><span>Today’s orders</span><strong>24</strong><small>+18% this week</small></div><div><span>Revenue</span><strong>Rs. 184k</strong><small>After discounts</small></div><div><span>Low stock</span><strong>3</strong><small>Needs attention</small></div><div><span>Custom queue</span><strong>8</strong><small>2 need reply</small></div></div><div className="admin-callout"><div><span className="eyebrow">Quick controls</span><h3>Keep the store feeling like you.</h3><p>Every operational value can be changed here and reflected in the storefront preview.</p></div><button className="drawer-primary" onClick={() => setAdminTab('settings')}>Edit brand settings <span>↗</span></button></div></div>}{adminTab === 'products' && <div className="admin-table"><div className="table-head"><span>Product</span><span>Price (PKR)</span><span>Stock</span></div>{products.map((product) => <div className="table-row" key={product.id}><input aria-label={`${product.name} name`} value={product.name} onChange={(event) => updateProduct(product.id, 'name', event.target.value)} /><input aria-label={`${product.name} price`} type="number" value={product.price} onChange={(event) => updateProduct(product.id, 'price', event.target.value)} /><input aria-label={`${product.name} stock`} type="number" value={product.stock} onChange={(event) => updateProduct(product.id, 'stock', event.target.value)} /></div>)}</div>}{adminTab === 'settings' && <div className="settings-grid"><label className="field-label">Brand name<input value={brandName} onChange={(event) => setBrandName(event.target.value.toUpperCase())} /></label><label className="field-label">AI greeting<input value={aiGreeting} onChange={(event) => setAiGreeting(event.target.value)} /></label><label className="field-label">VIP discount %<input type="number" value={vipDiscount} onChange={(event) => setVipDiscount(event.target.value)} /></label><label className="field-label">Default delivery rate<input type="number" value={shippingRate} onChange={(event) => setShippingRate(event.target.value)} /></label><div className="admin-save"><span>Unsaved preview changes update instantly.</span><button className="drawer-primary" onClick={() => setAdminTab('overview')}>Save settings <span>✓</span></button></div></div>}{adminTab === 'shipping' && <div className="settings-grid"><label className="field-label">Islamabad rate<input value={shippingRate} onChange={(event) => setShippingRate(event.target.value)} /></label><label className="field-label">Lahore rate<input value={shippingRate} onChange={(event) => setShippingRate(event.target.value)} /></label><label className="field-label">Karachi rate<input value={shippingRate} onChange={(event) => setShippingRate(event.target.value)} /></label><div className="admin-note">Standard delivery only · Pakistan launch · City rates are controlled here.</div></div>}{adminTab === 'discounts' && <div className="settings-grid"><label className="field-label">VIP discount %<input type="number" value={vipDiscount} onChange={(event) => setVipDiscount(event.target.value)} /></label><label className="field-label">Next campaign name<input defaultValue="The Eid Edit" /></label><div className="admin-note">Discount rules are configurable without changing catalog prices.</div></div>}{adminTab === 'ai' && <div className="settings-grid"><label className="field-label">Assistant greeting<input value={aiGreeting} onChange={(event) => setAiGreeting(event.target.value)} /></label><label className="field-label">Grounding mode<select defaultValue="Catalog + live inventory"><option>Catalog + live inventory</option><option>Catalog only</option></select></label><div className="admin-note">AI answers remain grounded in product, inventory and policy data. Pricing stays admin-controlled.</div></div>}{(adminTab === 'orders' || adminTab === 'customers') && <div className="admin-note large-note">{adminTab === 'orders' ? 'Orders, payments, returns, refunds and fulfillment will be managed from this workspace.' : 'Customer profiles, verification, loyalty progress, addresses and notification preferences are managed here.'}<button className="drawer-primary" onClick={() => setAdminTab('overview')}>Back to overview <span>↗</span></button></div>}</div></section>}
-      {overlay === 'admin' && adminTab === 'products' && <aside className="catalog-tools" aria-label="Catalog add and delete tools"><div className="catalog-tools-head"><div><span className="eyebrow">Catalog controls</span><h3>Add or remove items</h3></div><span className="catalog-count">{products.length} items</span></div><form className="catalog-add" onSubmit={addProduct}><input value={newProductName} onChange={(event) => setNewProductName(event.target.value)} placeholder="New item name" aria-label="New item name" required /><button aria-label="Add product">Add</button></form><div className="catalog-delete-list">{products.map((product) => <div key={product.id}><span>{product.name}</span><button onClick={() => removeProduct(product.id)} aria-label={`Delete ${product.name}`}>Delete</button></div>)}</div></aside>}
-    </main>
+      {/* ================= MODALS, DRAWERS & DASHBOARD ================= */}
+
+      {/* 1. SHOPPING CART DRAWER */}
+      {activeModal === 'cart' && (
+        <CartDrawer
+          cart={cart}
+          onClose={() => setActiveModal(null)}
+          onUpdateQty={updateCartQty}
+          onRemoveItem={removeFromCart}
+          onClearBag={() => {
+            setCart([])
+            showToast('Cart cleared', 'info')
+          }}
+          onProceedToCheckout={() => setActiveModal('checkout')}
+          onExploreShop={() => {
+            setActiveModal(null)
+            scrollTo('shop')
+          }}
+          cartSubtotal={cartSubtotal}
+          discountAmount={discountAmount}
+          shippingCost={shippingCost}
+          cartTotal={cartTotal}
+          freeShippingProgress={freeShippingProgress}
+          remainingForFreeShipping={remainingForFreeShipping}
+          appliedCoupon={appliedCoupon}
+          onApplyCoupon={handleApplyCoupon}
+          onRemoveCoupon={() => {
+            setAppliedCoupon(null)
+            showToast('Coupon removed', 'info')
+          }}
+          promoList={promoList}
+          formatPrice={formatPrice}
+        />
+      )}
+
+      {/* 2. WISHLIST DRAWER */}
+      {activeModal === 'wishlist' && (
+        <WishlistDrawer
+          wishlist={wishlist}
+          products={products}
+          onClose={() => setActiveModal(null)}
+          onToggleWishlist={toggleWishlist}
+          onMoveToBag={(p) => {
+            addToCart(p, 'M', 1)
+            setWishlist((prev) => prev.filter((id) => id !== p.id))
+          }}
+          onMoveAllToBag={() => {
+            const saved = products.filter((p) => wishlist.includes(p.id))
+            saved.forEach((p) => addToCart(p, 'M', 1))
+            setWishlist([])
+            setActiveModal('cart')
+          }}
+          onExploreShop={() => {
+            setActiveModal(null)
+            scrollTo('shop')
+          }}
+          formatPrice={formatPrice}
+        />
+      )}
+
+      {/* 3. FILTER & SORT DRAWER */}
+      {activeModal === 'filter' && (
+        <FilterDrawer
+          categories={categories}
+          activeCategory={activeCategory}
+          onSelectCategory={setActiveCategory}
+          sort={sort}
+          onSortChange={setSort}
+          priceMax={priceMax}
+          onPriceMaxChange={setPriceMax}
+          inStockOnly={inStockOnly}
+          onToggleInStockOnly={setInStockOnly}
+          onReset={() => {
+            setActiveCategory('All pieces')
+            setSort('Recommended')
+            setPriceMax(20000)
+            setInStockOnly(false)
+            showToast('Filters reset', 'info')
+          }}
+          onClose={() => setActiveModal(null)}
+          visibleCount={visibleProducts.length}
+          formatPrice={formatPrice}
+        />
+      )}
+
+      {/* 4. PRODUCT QUICK VIEW MODAL */}
+      {activeModal === 'product' && selectedProduct && (
+        <QuickViewModal
+          product={selectedProduct}
+          isSaved={wishlist.includes(selectedProduct.id)}
+          onClose={() => setActiveModal(null)}
+          onAddToCart={(p, size, qty, unitPrice) => addToCart(p, size, qty, unitPrice)}
+          onToggleWishlist={toggleWishlist}
+          onOpenSizeGuide={() => setActiveModal('size')}
+          formatPrice={formatPrice}
+        />
+      )}
+
+      {/* 5. MULTI-STEP CHECKOUT MODAL */}
+      {activeModal === 'checkout' && (
+        <CheckoutModal
+          cart={cart}
+          cartSubtotal={cartSubtotal}
+          discountAmount={discountAmount}
+          shippingCost={shippingCost}
+          cartTotal={cartTotal}
+          appliedCoupon={appliedCoupon}
+          onClose={() => setActiveModal(null)}
+          onCompleteOrder={(newOrder) => {
+            setOrders((prev) => [newOrder, ...prev])
+            setCart([])
+            setUserProfile((prev) => ({
+              ...prev,
+              points: prev.points + Math.round(newOrder.total / 100),
+            }))
+            showToast(`Order #${newOrder.id} placed successfully!`, 'success')
+          }}
+          onOpenAccountPortal={() => setActiveModal('account')}
+          formatPrice={formatPrice}
+        />
+      )}
+
+      {/* 6. BESPOKE CUSTOM TAILORING MODAL */}
+      {activeModal === 'custom' && (
+        <BespokeModal
+          onClose={() => setActiveModal(null)}
+          onSubmitBespoke={(req) => {
+            setBespokeRequests((prev) => [req, ...prev])
+            showToast(`Custom commission #${req.id} submitted!`, 'success')
+          }}
+        />
+      )}
+
+      {/* 7. PERFECTED CUSTOMER DASHBOARD & ACCOUNT SUITE */}
+      {activeModal === 'account' && (
+        <CustomerDashboard
+          onClose={() => setActiveModal(null)}
+          orders={orders}
+          wishlist={wishlist}
+          products={products}
+          addresses={addresses}
+          bespokeRequests={bespokeRequests}
+          userProfile={userProfile}
+          sizingProfile={sizingProfile}
+          onUpdateUserProfile={setUserProfile}
+          onUpdateSizingProfile={setSizingProfile}
+          onAddAddress={(newAddr) => {
+            setAddresses((prev) => [...prev, { ...newAddr, id: ++nextAddressCounter }])
+          }}
+          onSetDefaultAddress={(id) => {
+            setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })))
+          }}
+          onDeleteAddress={(id) => {
+            setAddresses((prev) => prev.filter((a) => a.id !== id))
+          }}
+          onMoveWishlistToCart={(prod, size, unitPrice) => {
+            addToCart(prod, size, 1, unitPrice)
+            setWishlist((prev) => prev.filter((id) => id !== prod.id))
+          }}
+          onToggleWishlist={toggleWishlist}
+          onReorder={(order) => {
+            order.items.forEach((item) =>
+              addToCart(item.product, item.size, item.quantity, item.unitPrice)
+            )
+            setActiveModal('cart')
+          }}
+          onRedeemVoucher={handleRedeemVoucher}
+          formatPrice={formatPrice}
+          showToast={showToast}
+        />
+      )}
+
+      {/* 8. INTERACTIVE SIZE GUIDE MODAL */}
+      {activeModal === 'size' && (
+        <SizeGuideModal
+          onClose={() => setActiveModal(null)}
+          onAskStylist={() => {
+            setActiveModal(null)
+            setAssistantOpen(true)
+          }}
+        />
+      )}
+
+      {/* 9. POLICIES & DELIVERY ESTIMATOR MODAL */}
+      {activeModal === 'policy' && (
+        <PolicyModal onClose={() => setActiveModal(null)} />
+      )}
+
+      {/* 10. ATELIER CONCIERGE CONTACT MODAL */}
+      {activeModal === 'contact' && (
+        <ContactModal
+          onClose={() => setActiveModal(null)}
+          onSuccess={() => showToast('Message sent to our Lahore concierge!', 'success')}
+        />
+      )}
+
+      {/* 11. OPERATIONS & ADMIN STUDIO (STRICTLY RESTRICTED TO AUTHENTICATED STAFF) */}
+      {activeModal === 'admin' && !isAdminAuthenticated && (
+        <AdminLoginModal
+          onClose={() => setActiveModal(null)}
+          onLoginSuccess={() => {
+            setIsAdminAuthenticated(true)
+          }}
+          showToast={showToast}
+        />
+      )}
+
+      {activeModal === 'admin' && isAdminAuthenticated && (
+        <AdminStudio
+          onClose={() => setActiveModal(null)}
+          onLogout={() => {
+            setIsAdminAuthenticated(false)
+            setActiveModal(null)
+            showToast('Staff logged out successfully', 'info')
+          }}
+          brandName={brandName}
+          onUpdateBrandName={setBrandName}
+          announcementText={announcementText}
+          onUpdateAnnouncementText={setAnnouncementText}
+          products={products}
+          onAddProduct={(prod) => {
+            const newP: Product = { ...prod, id: ++nextProductCounter }
+            setProducts((prev) => [newP, ...prev])
+            showToast(`Added "${newP.name}" to live catalog!`, 'success')
+          }}
+          onUpdateProduct={(id, field, val) => {
+            setProducts((prev) =>
+              prev.map((p) =>
+                p.id === id
+                  ? { ...p, [field]: field === 'name' ? val : Math.max(0, Number(val) || 0) }
+                  : p
+              )
+            )
+          }}
+          onDeleteProduct={(id) => {
+            const prod = products.find((p) => p.id === id)
+            setProducts((prev) => prev.filter((p) => p.id !== id))
+            showToast(`Removed "${prod?.name}" from live catalog`, 'info')
+          }}
+          orders={orders}
+          onUpdateOrderStatus={(id, status) => {
+            setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)))
+            showToast(`Order #${id} status updated to ${status}`, 'success')
+          }}
+          promoList={promoList}
+          onAddPromo={(code, discount) => {
+            setPromoList((prev) => [...prev, { code, discount, active: true }])
+            showToast(`Coupon "${code}" (${discount}%) activated!`, 'success')
+          }}
+          onTogglePromo={(code) => {
+            setPromoList((prev) =>
+              prev.map((p) => (p.code === code ? { ...p, active: !p.active } : p))
+            )
+            showToast(`Coupon "${code}" toggled`, 'info')
+          }}
+          formatPrice={formatPrice}
+          showToast={showToast}
+        />
+      )}
+    </div>
   )
 }
-
-export default App
