@@ -44,6 +44,7 @@ import { BrandPillars } from './components/storefront/BrandPillars'
 import { ProductGrid } from './components/storefront/ProductGrid'
 import { BespokeBanner } from './components/storefront/BespokeBanner'
 import { Testimonials } from './components/storefront/Testimonials'
+import { ProductDetailPage } from './components/product/ProductDetailPage'
 
 // Perfected Customer Portal & Dashboard
 import { CustomerDashboard } from './components/customer/CustomerDashboard'
@@ -123,6 +124,42 @@ export default function App() {
       document.body.classList.remove('modal-open')
     }
   }, [activeModal])
+
+  // Sync URL search parameter (?product=ID) for Daraz/Shopify style page navigation
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const pId = params.get('product')
+    if (pId) {
+      const match = products.find((pr) => pr.id === Number(pId))
+      if (match) setSelectedProduct(match)
+    }
+
+    const handlePopState = () => {
+      const p = new URLSearchParams(window.location.search)
+      const id = p.get('product')
+      if (id) {
+        const match = products.find((pr) => pr.id === Number(id))
+        setSelectedProduct(match || null)
+      } else {
+        setSelectedProduct(null)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [products])
+
+  const handleOpenProduct = (p: Product) => {
+    setSelectedProduct(p)
+    setActiveModal(null)
+    window.history.pushState({ productId: p.id }, '', `?product=${p.id}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleCloseProduct = () => {
+    setSelectedProduct(null)
+    window.history.pushState({}, '', window.location.pathname)
+  }
 
   // Toast System
   const [toasts, setToasts] = useState<Toast[]>([])
@@ -307,86 +344,108 @@ export default function App() {
         }}
         onClearSearch={() => setSearch('')}
         products={products}
-        onQuickView={(p) => {
-          setSelectedProduct(p)
-          setActiveModal('product')
-        }}
+        onQuickView={handleOpenProduct}
         formatPrice={formatPrice}
         wishlistCount={wishlist.length}
         cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
         mobileMenuOpen={mobileMenuOpen}
         onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
-        onScrollTo={scrollTo}
-        onOpenModal={(m) => setActiveModal(m)}
-        onCategorySelect={(cat) => setActiveCategory(cat)}
-      />
-
-      {/* Hero Showcase with Slide Navigation */}
-      <HeroSection
-        slides={heroSlides}
-        onExploreClick={() => scrollTo('shop')}
-        onBespokeClick={() => setActiveModal('custom')}
-      />
-
-      {/* Haute Couture Brand Pillars */}
-      <BrandPillars />
-
-      {/* Main Catalog & Shopping Grid */}
-      <ProductGrid
-        products={visibleProducts}
-        categories={categories}
-        activeCategory={activeCategory}
-        onSelectCategory={setActiveCategory}
-        onOpenFilterDrawer={() => setActiveModal('filter')}
-        search={search}
-        onClearSearch={() => setSearch('')}
-        priceMax={priceMax}
-        onResetPriceMax={() => setPriceMax(20000)}
-        inStockOnly={inStockOnly}
-        onToggleInStockOnly={() => setInStockOnly((v) => !v)}
-        onResetAllFilters={() => {
-          setActiveCategory('All pieces')
-          setSearch('')
-          setPriceMax(20000)
-          setInStockOnly(false)
-          showToast('All filters cleared', 'info')
+        onScrollTo={(id) => {
+          if (selectedProduct) handleCloseProduct()
+          scrollTo(id)
         }}
-        wishlist={wishlist}
-        onToggleWishlist={toggleWishlist}
-        onQuickView={(p) => {
-          setSelectedProduct(p)
-          setActiveModal('product')
-        }}
-        onQuickAdd={(p) => addToCart(p, 'M', 1)}
-        formatPrice={formatPrice}
-      />
-
-      {/* Bespoke Custom Atelier Showcase */}
-      <BespokeBanner onStartCustomDesign={() => setActiveModal('custom')} />
-
-      {/* Customer Testimonials & Reviews */}
-      <Testimonials />
-
-      {/* Comprehensive Haute Footer */}
-      <Footer
-        brandName={brandName}
-        onCategorySelect={(cat) => setActiveCategory(cat)}
         onOpenModal={(m) => setActiveModal(m)}
-        onScrollTo={scrollTo}
-        onNewsletterSubscribe={() => showToast('Thank you for subscribing to our Gazette!', 'success')}
+        onCategorySelect={(cat) => {
+          if (selectedProduct) handleCloseProduct()
+          setActiveCategory(cat)
+        }}
       />
+
+      {/* Product Details Page (Daraz / Shopify style) OR Main Catalog */}
+      {selectedProduct ? (
+        <ProductDetailPage
+          product={selectedProduct}
+          products={products}
+          onBack={handleCloseProduct}
+          onSelectProduct={handleOpenProduct}
+          onAddToCart={(p, size, qty) => addToCart(p, size, qty)}
+          onBuyNow={(p, size, qty) => {
+            addToCart(p, size, qty)
+            setActiveModal('checkout')
+          }}
+          isWishlisted={wishlist.includes(selectedProduct.id)}
+          onToggleWishlist={() => toggleWishlist(selectedProduct.id)}
+          onOpenSizeGuide={() => setActiveModal('size')}
+          onOpenCart={() => setActiveModal('cart')}
+          cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+          wishlistCount={wishlist.length}
+          formatPrice={formatPrice}
+          showToast={showToast}
+        />
+      ) : (
+        <>
+          {/* Hero Showcase with Slide Navigation */}
+          <HeroSection
+            slides={heroSlides}
+            onExploreClick={() => scrollTo('shop')}
+            onBespokeClick={() => setActiveModal('custom')}
+          />
+
+          {/* Haute Couture Brand Pillars */}
+          <BrandPillars />
+
+          {/* Main Catalog & Shopping Grid */}
+          <ProductGrid
+            products={visibleProducts}
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+            onOpenFilterDrawer={() => setActiveModal('filter')}
+            search={search}
+            onClearSearch={() => setSearch('')}
+            priceMax={priceMax}
+            onResetPriceMax={() => setPriceMax(20000)}
+            inStockOnly={inStockOnly}
+            onToggleInStockOnly={() => setInStockOnly((v) => !v)}
+            onResetAllFilters={() => {
+              setActiveCategory('All pieces')
+              setSearch('')
+              setPriceMax(20000)
+              setInStockOnly(false)
+              showToast('All filters cleared', 'info')
+            }}
+            wishlist={wishlist}
+            onToggleWishlist={toggleWishlist}
+            onQuickView={handleOpenProduct}
+            onQuickAdd={(p) => addToCart(p, 'M', 1)}
+            formatPrice={formatPrice}
+          />
+
+          {/* Bespoke Custom Atelier Showcase */}
+          <BespokeBanner onStartCustomDesign={() => setActiveModal('custom')} />
+
+          {/* Customer Testimonials & Reviews */}
+          <Testimonials />
+
+          {/* Comprehensive Haute Footer */}
+          <Footer
+            brandName={brandName}
+            onCategorySelect={(cat) => setActiveCategory(cat)}
+            onOpenModal={(m) => setActiveModal(m)}
+            onScrollTo={scrollTo}
+            onNewsletterSubscribe={() => showToast('Thank you for subscribing to our Gazette!', 'success')}
+          />
+        </>
+      )}
 
       {/* Grounded Jiya AI Stylist Floating Assistant */}
-      {!activeModal && (
+      {!activeModal && !selectedProduct && (
         <StylistAssistant
           products={products}
           isOpen={assistantOpen}
           onToggle={() => setAssistantOpen((o) => !o)}
           onAddToCart={(p) => addToCart(p, 'M', 1)}
-          onQuickView={(p) => {
-            setSelectedProduct(p)
-            setActiveModal('product')
-          }}
+          onQuickView={handleOpenProduct}
           formatPrice={formatPrice}
         />
       )}

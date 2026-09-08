@@ -113,22 +113,7 @@ export function Header({
 
   return (
     <header className="site-header">
-      {/* 1. Prestige Luxury Announcement Ticker */}
-      <div className="top-announcement-bar">
-        <div className="announcement-content">
-          <span className="announcement-badge">EID UL FITR 2026</span>
-          <span className="announcement-text">
-            Free Doorstep Delivery Across Pakistan on Orders Over Rs. 8,000 · Master Darzi Bespoke Tailoring Available
-          </span>
-          <span className="announcement-separator">·</span>
-          <span className="announcement-store">Lahore Flagship Studio: Gulberg III · Helpline: +92 301 8472910</span>
-        </div>
-        <div className="announcement-utilities">
-          <span className="currency-pill" title="National Currency — Pakistan Rupee">🇵🇰 PKR (Rs.)</span>
-        </div>
-      </div>
-
-      {/* 2. Main Header Container */}
+      {/* Main Header Container */}
       <div className="header-inner">
         {/* Mobile Hamburger Toggle Button */}
         <button
