@@ -15,6 +15,8 @@ interface StylistAssistantProps {
   onAddToCart: (product: Product) => void
   onQuickView: (product: Product) => void
   formatPrice: (pkr: number) => string
+  cartCount?: number
+  onOpenCart?: () => void
 }
 
 export function StylistAssistant({
@@ -24,6 +26,8 @@ export function StylistAssistant({
   onAddToCart,
   onQuickView,
   formatPrice,
+  cartCount = 0,
+  onOpenCart,
 }: StylistAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -82,6 +86,21 @@ export function StylistAssistant({
 
   return (
     <div className="floating-assistant-container">
+      {/* Floating Cart Button stacked directly above AI Stylist */}
+      {onOpenCart && (
+        <button
+          type="button"
+          className="floating-cart-pill"
+          onClick={onOpenCart}
+          aria-label={`View Shopping Cart (${cartCount} items)`}
+          title="Open Shopping Cart"
+        >
+          <span className="fc-icon">🛒</span>
+          <span className="fc-label">Cart</span>
+          {cartCount > 0 && <span className="fc-badge">{cartCount}</span>}
+        </button>
+      )}
+
       <button
         className={`assistant-trigger-pill ${isOpen ? 'active' : ''}`}
         onClick={onToggle}

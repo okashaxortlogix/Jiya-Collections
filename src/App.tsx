@@ -438,7 +438,7 @@ export default function App() {
         </>
       )}
 
-      {/* Grounded Jiya AI Stylist Floating Assistant */}
+      {/* Grounded Jiya AI Stylist Floating Assistant & Stacked Quick Cart */}
       {!activeModal && !selectedProduct && (
         <StylistAssistant
           products={products}
@@ -447,6 +447,8 @@ export default function App() {
           onAddToCart={(p) => addToCart(p, 'M', 1)}
           onQuickView={handleOpenProduct}
           formatPrice={formatPrice}
+          cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+          onOpenCart={() => setActiveModal('cart')}
         />
       )}
 
