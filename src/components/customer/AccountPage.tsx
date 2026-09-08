@@ -369,7 +369,7 @@ export function AccountPage({
             <div className="tab-pane-overview">
               <div className="welcome-banner-card">
                 <div>
-                  <span className="client-tier-pill">Atelier Patron</span>
+                  <span className="client-tier-pill">VIP Client</span>
                   <h3>Welcome back, {userProfile.name}</h3>
                   <p>
                     Manage your ongoing orders, track live Trax courier deliveries, redeem reward coins, and view your custom Lahore tailor fit.
@@ -453,7 +453,7 @@ export function AccountPage({
 
                 <div className="overview-card-flat">
                   <div className="oc-flat-header">
-                    <strong>Atelier Wallet & Coins</strong>
+                    <strong>Store Wallet & Coins</strong>
                     <button
                       type="button"
                       className="text-link-sm"
@@ -716,7 +716,7 @@ export function AccountPage({
             <div className="tab-pane-bespoke">
               <div className="bespoke-toolbar">
                 <div>
-                  <h4>Custom Stitching Commissions ({bespokeRequests.length})</h4>
+                  <h4>Custom Stitching Orders ({bespokeRequests.length})</h4>
                   <p>Track your custom tailored stitching orders tailored in Lahore.</p>
                 </div>
               </div>
@@ -830,7 +830,7 @@ export function AccountPage({
               <div className="loyalty-hero-box">
                 <div className="lh-header">
                   <div>
-                    <span className="client-tier-pill">Atelier Coins Club</span>
+                    <span className="client-tier-pill">Rewards & Coins Club</span>
                     <h3>{userProfile.points} Reward Coins Available</h3>
                     <p>Earn 1 coin for every Rs. 100 spent. Redeem coins for instant cash discounts.</p>
                   </div>
@@ -841,7 +841,7 @@ export function AccountPage({
                   <div className="tpb-labels">
                     <span>Silver Member (0 pts)</span>
                     <span>Gold VIP (1,000 pts)</span>
-                    <span>Platinum Atelier (2,500 pts)</span>
+                    <span>Platinum VIP (2,500 pts)</span>
                   </div>
                   <div className="tpb-track">
                     <div
@@ -1085,7 +1085,7 @@ export function AccountPage({
               <div className="lcs-step completed">
                 <span className="lcs-dot" />
                 <div>
-                  <strong>Order Picked from Lahore Atelier</strong>
+                  <strong>Order Dispatched from Lahore Warehouse</strong>
                   <small>Trax Hub · Gulberg III, Lahore</small>
                 </div>
               </div>

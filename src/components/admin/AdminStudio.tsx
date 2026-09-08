@@ -91,7 +91,7 @@ export function AdminStudio({
       tag: newProd.tag,
       rating: 5.0,
       reviewsCount: 1,
-      description: 'Artisanal Pakistani ensemble tailored with care in our Lahore atelier.',
+      description: 'Artisanal Pakistani outfit tailored with care in our Lahore studio.',
     })
     setNewProd({
       name: '',
@@ -104,7 +104,7 @@ export function AdminStudio({
       color: '',
       stock: 10,
       image: '/products/women_lawn_suit.jpg',
-      tag: 'Cultural Edition',
+      tag: 'New Arrival',
     })
   }
 
@@ -156,7 +156,7 @@ export function AdminStudio({
       <main className="admin-studio-content">
         <div className="admin-content-topbar">
           <div>
-            <span className="drawer-eyebrow">Atelier Control Centre</span>
+            <span className="drawer-eyebrow">Store Admin Control Panel</span>
             <h2>{adminTab.toUpperCase()}</h2>
           </div>
           <div className="admin-topbar-actions">
@@ -265,7 +265,7 @@ export function AdminStudio({
                     <option value="Women Unstitched">Women Unstitched</option>
                     <option value="Men Stitched">Men Stitched</option>
                     <option value="Men Unstitched">Men Unstitched</option>
-                    <option value="Festive Couture">Festive Couture</option>
+                    <option value="Festive Wear">Festive Wear</option>
                   </select>
                   <input
                     type="number"
@@ -288,7 +288,7 @@ export function AdminStudio({
                   >
                     <option value="Women">Women's Collection</option>
                     <option value="Men">Men's Collection</option>
-                    <option value="Unisex">Unisex Couture</option>
+                    <option value="Unisex">Unisex Collection</option>
                   </select>
                   <select
                     value={newProd.stitchType}
@@ -428,7 +428,7 @@ export function AdminStudio({
                         className="luxury-select"
                       >
                         <option>Confirmed</option>
-                        <option>In Atelier</option>
+                        <option>In Stitching</option>
                         <option>Dispatched</option>
                         <option>Delivered</option>
                       </select>

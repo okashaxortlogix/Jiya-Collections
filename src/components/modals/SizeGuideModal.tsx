@@ -125,8 +125,8 @@ export function SizeGuideModal({ onClose, onAskStylist }: SizeGuideModalProps) {
 
         <div className="size-dialog-footer">
           <p>
-            Between two sizes? Choose the larger size for a modest relaxed silhouette, or book custom
-            measurements in our Bespoke Studio.
+            Between two sizes? Choose the larger size for a relaxed modest fit, or enter your custom
+            measurements using our Custom Stitching service.
           </p>
           <button className="btn-primary-luxury" onClick={onAskStylist}>
             Ask Jiya AI Stylist for Advice ↗

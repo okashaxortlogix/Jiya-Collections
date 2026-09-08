@@ -9,8 +9,8 @@ interface ContactModalProps {
 export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState({
-    name: 'Hira Ahmed',
-    email: 'hira.ahmed@example.com',
+    name: '',
+    email: '',
     subject: 'Sizing & Fit Advice',
     message: '',
   })
@@ -28,7 +28,7 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
         <div className="drawer-header">
           <div>
             <span className="drawer-eyebrow">Get in Touch</span>
-            <h2 className="drawer-title">Lahore Atelier Concierge</h2>
+            <h2 className="drawer-title">Customer Support & Inquiries</h2>
           </div>
           <button className="modal-close-icon" onClick={onClose} aria-label="Close contact modal">
             ✕
@@ -43,6 +43,7 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Ayesha Khan"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
@@ -52,6 +53,7 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
                 <input
                   type="email"
                   required
+                  placeholder="e.g. ayesha@gmail.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -66,10 +68,10 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
                 className="luxury-select"
               >
                 <option>Sizing & Fit Advice</option>
-                <option>Bespoke Couture Consultation</option>
+                <option>Custom Stitching Consultation</option>
                 <option>Existing Order Inquiries</option>
-                <option>Bridal & Trousseau Orders</option>
-                <option>Press & Collaborations</option>
+                <option>Bridal & Wedding Orders</option>
+                <option>General Questions</option>
               </select>
             </div>
 
@@ -80,12 +82,12 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
                 rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                placeholder="Tell us how our Lahore atelier concierge can assist you..."
+                placeholder="How can we help you with your order, sizing, or stitching?..."
               />
             </div>
 
             <button type="submit" className="btn-primary-luxury full-width">
-              Send Message to Concierge ↗
+              Send Message ↗
             </button>
           </form>
         ) : (
@@ -93,8 +95,7 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
             <span className="success-seal">✓</span>
             <h3>Message Received</h3>
             <p>
-              Thank you for reaching out to the Jiya Collections atelier. A member of our styling
-              concierge will reply to {form.email} within 2 hours.
+              Thank you for reaching out! Our customer support team will reply to {form.email} within 2 hours.
             </p>
             <button className="btn-primary-luxury" onClick={onClose}>
               Close

@@ -51,7 +51,7 @@ export function Footer({
           <span className="trust-icon">✂</span>
           <div>
             <strong>Generational Master Darzi</strong>
-            <p>Precision Pret silhouettes & bespoke custom tailoring in Lahore</p>
+            <p>Precision ready-to-wear silhouettes & custom tailoring in Lahore</p>
           </div>
         </div>
         <div className="trust-card">
@@ -79,7 +79,7 @@ export function Footer({
           <div className="footer-contact-info">
             <span>📍 <strong>Flagship Studio:</strong> 24-C Main Boulevard, Gulberg III, Lahore</span>
             <span>💬 <strong>WhatsApp & Support:</strong> +92 301 8472910</span>
-            <span>✉ <strong>Official Concierge:</strong> care@jiyacollections.pk</span>
+            <span>✉ <strong>Customer Support:</strong> care@jiyacollections.pk</span>
             <span>⏰ <strong>Studio Hours:</strong> Mon – Sat: 11:00 AM – 9:00 PM PKT</span>
           </div>
         </div>
@@ -99,30 +99,30 @@ export function Footer({
           <button onClick={() => { onCategorySelect('Men Unstitched'); onScrollTo('shop'); }}>
             Men Unstitched (Boski & Latha)
           </button>
-          <button onClick={() => { onCategorySelect('Festive Couture'); onScrollTo('shop'); }}>
-            Festive Couture & Sherwanis
+          <button onClick={() => { onCategorySelect('Festive Wear'); onScrollTo('shop'); }}>
+            Festive Wear & Sherwanis
           </button>
           <button onClick={() => onOpenModal('custom')}>
-            Bespoke Master Tailoring Atelier
+            Custom Stitching & Tailoring
           </button>
         </div>
 
         {/* Col 3: Client Experience & Care */}
         <div className="footer-links-col">
-          <span className="footer-col-title">Client Experience</span>
+          <span className="footer-col-title">Customer Care</span>
           <button onClick={() => onOpenModal('size')}>Interactive Size & Fit Guide</button>
           <button onClick={() => onOpenModal('policy')}>Doorstep Delivery & Courier Policy</button>
           <button onClick={() => onOpenModal('policy')}>3-Day Exchange & Returns</button>
-          <button onClick={() => onOpenModal('account')}>VIP Customer Dashboard & Orders</button>
-          <button onClick={() => onOpenModal('contact')}>Book Lahore Studio Fitting</button>
-          <button onClick={() => onOpenModal('custom')}>Custom Measurement Consultation</button>
+          <button onClick={() => onOpenModal('account')}>My Account & Order Tracking</button>
+          <button onClick={() => onOpenModal('contact')}>Book Lahore Studio Visit</button>
+          <button onClick={() => onOpenModal('custom')}>Custom Stitching Consultation</button>
         </div>
 
-        {/* Col 4: Jiya Gazette VIP Newsletter */}
+        {/* Col 4: Newsletter */}
         <div className="footer-newsletter-col">
-          <span className="footer-col-title">The Jiya Gazette</span>
+          <span className="footer-col-title">Join Our Newsletter</span>
           <p className="newsletter-text">
-            Subscribe for private Eid collection previews, unstitched fabric launch alerts, and 10% off
+            Subscribe to get updates on new arrivals, Eid collection launches, and 10% off
             your first order.
           </p>
 
@@ -133,19 +133,19 @@ export function Footer({
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              aria-label="Email address for Jiya Gazette"
+              aria-label="Email address for newsletter"
             />
-            <button type="submit" aria-label="Subscribe to Jiya Gazette">
-              Join ↗
+            <button type="submit" aria-label="Subscribe to newsletter">
+              Subscribe
             </button>
           </form>
 
           {isSubscribed ? (
             <div className="newsletter-success-tag">
-              ✓ Welcome to Jiya Collections Gazette! Code <strong>EID2026</strong> saved.
+              ✓ Thank you for subscribing! Promo code <strong>EID2026</strong> saved.
             </div>
           ) : (
-            <small className="privacy-note">No spam. Only considered notes and private previews.</small>
+            <small className="privacy-note">No spam. Unsubscribe at any time.</small>
           )}
 
           {/* Secure Payment Badges */}

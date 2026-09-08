@@ -55,8 +55,8 @@ export function PolicyModal({ onClose }: PolicyModalProps) {
           <div className="policy-section">
             <h3>Domestic Pakistan Shipping</h3>
             <p>
-              All domestic orders are carefully steam-pressed, perfumed with bespoke atelier mist, and
-              dispatched from our Lahore facility via tracked couriers. Complimentary shipping is
+              All domestic orders are carefully inspected, steam-pressed, and
+              dispatched from our Lahore facility via tracked couriers. Free shipping is
               automatically applied on all orders of Rs. 8,000 or above.
             </p>
           </div>

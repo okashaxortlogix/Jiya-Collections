@@ -13,18 +13,18 @@ export function BespokeBanner({ onStartCustomDesign }: BespokeBannerProps) {
             className="bespoke-img"
           />
           <div className="bespoke-badge-overlay">
-            <span>BESPOKE ATELIER</span>
+            <span>CUSTOM STITCHING</span>
             <strong>Lahore, Pakistan</strong>
           </div>
         </div>
 
         <div className="bespoke-copy">
-          <span className="section-eyebrow">Personalized Tailoring</span>
-          <h2 className="bespoke-title">A Silhouette Cut Exclusively for You</h2>
+          <span className="section-eyebrow">Custom Stitching & Tailoring</span>
+          <h2 className="bespoke-title">Custom Outfits Stitched Just For You</h2>
           <p className="bespoke-text">
-            Have a distinct vision for your festive wardrobe? Choose your preferred pure fabrics,
-            necklines, sleeve lengths, and hand-embellishments. Our master tailors bring your concept to
-            life with couture precision.
+            Have a distinct idea for your festive or everyday outfit? Choose your preferred fabrics,
+            necklines, sleeve lengths, and trouser cuts. Our master tailors stitch your dress to
+            your exact measurements with perfect fitting.
           </p>
 
           <div className="bespoke-points">
@@ -45,7 +45,7 @@ export function BespokeBanner({ onStartCustomDesign }: BespokeBannerProps) {
             <div className="b-point">
               <span>03</span>
               <div>
-                <strong>Dedicated Stylist</strong>
+                <strong>WhatsApp Support</strong>
                 <small>Direct WhatsApp progress updates with photos</small>
               </div>
             </div>
@@ -55,7 +55,7 @@ export function BespokeBanner({ onStartCustomDesign }: BespokeBannerProps) {
             className="btn-primary-luxury bespoke-btn"
             onClick={onStartCustomDesign}
           >
-            <span>Design Your Custom Look</span>
+            <span>Request Custom Stitching</span>
             <span className="arrow-glyph">→</span>
           </button>
         </div>

@@ -39,8 +39,8 @@ export function Testimonials() {
         <div className="testimonial-card">
           <span className="quote-mark">“</span>
           <p className="quote-body">
-            The Bespoke Studio nailed my exact sleeve and kurta length. Finding modestwear that doesn't
-            compromise on haute aesthetics in Pakistan used to be difficult — Jiya Collections is my go-to now.
+            The Custom Stitching team nailed my exact sleeve and kurta length. Finding modest clothing that doesn't
+            compromise on modern elegance in Pakistan used to be difficult — Jiya Collections is my go-to now.
           </p>
           <div className="quote-author">
             <strong>Mahnoor F.</strong>

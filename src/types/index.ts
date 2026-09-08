@@ -3,7 +3,7 @@ export type ProductCategory =
   | 'Women Unstitched'
   | 'Men Stitched'
   | 'Men Unstitched'
-  | 'Festive Couture'
+  | 'Festive Wear'
 
 export type SizeOption = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'Custom'
 
@@ -33,7 +33,7 @@ export type CartItem = {
   unitPrice: number
 }
 
-export type OrderStatus = 'Confirmed' | 'In Atelier' | 'Dispatched' | 'Delivered'
+export type OrderStatus = 'Confirmed' | 'In Stitching' | 'Dispatched' | 'Delivered'
 
 export type Order = {
   id: string

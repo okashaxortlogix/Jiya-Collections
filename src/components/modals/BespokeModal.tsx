@@ -28,7 +28,7 @@ export function BespokeModal({ onClose, onSubmitBespoke }: BespokeModalProps) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    const newRef = `BESPOKE-2026-${++nextBespokeId}`
+    const newRef = `CUSTOM-2026-${++nextBespokeId}`
     setRefId(newRef)
     setSubmitted(true)
     onSubmitBespoke({
@@ -44,8 +44,8 @@ export function BespokeModal({ onClose, onSubmitBespoke }: BespokeModalProps) {
       <div className="bespoke-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="bespoke-dialog-header">
           <div>
-            <span className="drawer-eyebrow">Bespoke Couture Atelier</span>
-            <h2 className="drawer-title">Craft Your Custom Silhouette</h2>
+            <span className="drawer-eyebrow">Custom Stitching Studio</span>
+            <h2 className="drawer-title">Custom Stitching & Design Request</h2>
           </div>
           <button className="modal-close-icon" onClick={onClose} aria-label="Close custom studio">
             ✕
@@ -175,33 +175,32 @@ export function BespokeModal({ onClose, onSubmitBespoke }: BespokeModalProps) {
             </div>
 
             <button type="submit" className="btn-primary-luxury full-width">
-              Submit Custom Order Request to Lahore Atelier ↗
+              Submit Custom Stitching Request ↗
             </button>
           </form>
         ) : (
           <div className="custom-success-view">
             <span className="success-seal">✦</span>
-            <h3>Your Custom Design Request is Received!</h3>
+            <h3>Your Custom Stitching Request is Received!</h3>
             <p>
               Reference ID: <strong>{refId}</strong>
             </p>
             <p className="success-desc">
-              Our master pattern maker is reviewing your requirements ({form.fabric} · {form.silhouette}).
-              A senior design specialist will reach out via WhatsApp within 4 business hours with fabric
-              swatches and sketch iterations.
+              Our master tailor is reviewing your requirements ({form.fabric} · {form.silhouette}).
+              Our team will reach out via WhatsApp within 4 business hours to confirm measurements and styling.
             </p>
 
             <div className="custom-success-actions">
               <a
-                href={`https://wa.me/923018472910?text=Hi%20Jiya%20Collections,%20I%20just%20submitted%20bespoke%20request%20${refId}`}
+                href={`https://wa.me/923018472910?text=Hi%20Jiya%20Collections,%20I%20just%20submitted%20custom%20stitching%20request%20${refId}`}
                 target="_blank"
                 rel="noreferrer"
                 className="btn-primary-luxury"
               >
-                Open WhatsApp Chat with Stylist 💬
+                Open WhatsApp Chat with Tailoring Team 💬
               </a>
               <button className="btn-outline-luxury" onClick={onClose}>
-                Return to Storefront
+                Back to Shopping
               </button>
             </div>
           </div>

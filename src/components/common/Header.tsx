@@ -133,7 +133,7 @@ export function Header({
           aria-label="Return to Jiya Collections home"
         >
           <span className="brand-primary">{brandName}</span>
-          <span className="brand-tagline">Lahore Atelier · Est. 2024</span>
+          <span className="brand-tagline">Lahore, Pakistan · Est. 2024</span>
         </button>
 
         {/* Primary Desktop Navigation Bar */}
@@ -162,16 +162,16 @@ export function Header({
           <button
             type="button"
             className="nav-link"
-            onClick={() => handleNavCategoryClick('Festive Couture')}
+            onClick={() => handleNavCategoryClick('Festive Wear')}
           >
-            Festive Couture
+            Festive Wear
           </button>
           <button
             type="button"
             className="nav-link nav-highlight"
             onClick={() => onScrollTo('custom')}
           >
-            Bespoke Atelier
+            Custom Stitching
           </button>
           <button
             type="button"
@@ -218,7 +218,7 @@ export function Header({
               <div className="search-dropdown-menu">
                 {cleanQ.length === 0 ? (
                   <div className="search-trending-box">
-                    <span className="search-dropdown-heading">Trending in Atelier</span>
+                    <span className="search-dropdown-heading">Trending Searches</span>
                     <div className="search-trending-chips">
                       {TRENDING_SEARCHES.map((tag) => (
                         <button
@@ -355,7 +355,7 @@ export function Header({
         <div className="mobile-nav-header">
           <div className="mobile-nav-brand">
             <strong>{brandName}</strong>
-            <span>Lahore Flagship Atelier</span>
+            <span>Lahore Store & Studio</span>
           </div>
           <button
             className="modal-close-icon"
@@ -366,7 +366,7 @@ export function Header({
           </button>
         </div>
 
-        <div className="mobile-nav-section-title">Eastern Cultural Collections</div>
+        <div className="mobile-nav-section-title">Eastern Collections</div>
         <div className="mobile-nav-links-grid">
           <button className="mobile-cat-pill" onClick={() => handleNavCategoryClick('Women Stitched')}>
             <span>👗 Women Stitched (Pret)</span>
@@ -384,13 +384,13 @@ export function Header({
             <span>📦 Men Unstitched (Boski & Latha)</span>
             <span className="cat-count-badge">7 Items</span>
           </button>
-          <button className="mobile-cat-pill" onClick={() => handleNavCategoryClick('Festive Couture')}>
-            <span>👑 Festive Couture & Sherwanis</span>
+          <button className="mobile-cat-pill" onClick={() => handleNavCategoryClick('Festive Wear')}>
+            <span>👑 Festive Wear & Sherwanis</span>
             <span className="cat-count-badge">7 Items</span>
           </button>
         </div>
 
-        <div className="mobile-nav-section-title">Client Services & Atelier</div>
+        <div className="mobile-nav-section-title">Customer Care & Services</div>
         <div className="mobile-nav-services">
           <button
             className="mobile-service-link"
@@ -399,7 +399,7 @@ export function Header({
               onScrollTo('custom')
             }}
           >
-            ✂ Bespoke Master Tailoring Consultation →
+            ✂ Custom Stitching & Tailoring Consultation →
           </button>
           <button
             className="mobile-service-link"
@@ -417,7 +417,7 @@ export function Header({
               onOpenModal('account')
             }}
           >
-            👤 VIP Customer Orders & Dashboard →
+            👤 My Account & Order Tracking →
           </button>
           <button
             className="mobile-service-link"
@@ -432,7 +432,7 @@ export function Header({
 
         <div className="mobile-nav-footer">
           <span>💬 WhatsApp Helpline: +92 301 8472910</span>
-          <span>✉ Concierge: care@jiyacollections.pk</span>
+          <span>✉ Support: care@jiyacollections.pk</span>
         </div>
       </nav>
 

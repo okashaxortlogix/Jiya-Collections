@@ -1,5 +1,6 @@
 import type {
   Product,
+  ProductCategory,
   Order,
   Address,
   BespokeRequest,
@@ -25,7 +26,7 @@ export const sizeSurcharges: Record<SizeOption, { surcharge: number; label: stri
   M: { surcharge: 0, label: 'Standard' },
   L: { surcharge: 450, label: '+Rs. 450 (Tailored yardage)' },
   XL: { surcharge: 850, label: '+Rs. 850 (Extended yardage)' },
-  Custom: { surcharge: 1500, label: '+Rs. 1,500 (Bespoke pattern cut)' },
+  Custom: { surcharge: 1500, label: '+Rs. 1,500 (Custom stitched to your size)' },
 }
 
 export function calculateSizePrice(basePrice: number, size: SizeOption): number {
@@ -497,7 +498,7 @@ export const initialProducts: Product[] = [
     color: 'Natural Ecru Off-White',
     fabric: 'Superfine Mercerized Cotton with Silky Luster',
     stock: 15,
-    tag: 'Atelier Favorite',
+    tag: 'Best Seller',
     rating: 4.9,
     reviewsCount: 31,
     image: '/products/men_unstitched_latha.jpg',
@@ -521,11 +522,11 @@ export const initialProducts: Product[] = [
     description: 'Authentic village handloom khadi woven on traditional pit looms in Punjab. Breathable, distinct rustic texture, and natural earth tones.',
   },
 
-  // ================= 5. FESTIVE COUTURE & SHERWANIS (7 ITEMS) =================
+  // ================= 5. FESTIVE WEAR & SHERWANIS (7 ITEMS) =================
   {
     id: 29,
     name: 'Maharaja Royal Brocade Embroidered Sherwani',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Men',
     stitchType: 'Stitched',
     pieces: '2 Piece Sherwani & Churidhar',
@@ -543,7 +544,7 @@ export const initialProducts: Product[] = [
   {
     id: 30,
     name: 'Soraya Handcrafted Zardozi Peshwas Ensemble',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Women',
     stitchType: 'Stitched',
     pieces: '3 Piece Peshwas, Lehnga & Chiffon Dupatta',
@@ -551,7 +552,7 @@ export const initialProducts: Product[] = [
     color: 'Blush Gold',
     fabric: 'Fine Net & Pure Raw Silk with Hand-Worked Zardozi',
     stock: 3,
-    tag: 'Bridal Couture',
+    tag: 'Bridal Wear',
     rating: 4.9,
     reviewsCount: 20,
     image: '/products/women_festive_peshwas.jpg',
@@ -560,7 +561,7 @@ export const initialProducts: Product[] = [
   {
     id: 31,
     name: 'Mahira Velvet Embroidered Gharara Set',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Women',
     stitchType: 'Stitched',
     pieces: '3 Piece Velvet Kurti, Flared Gharara & Dupatta',
@@ -577,7 +578,7 @@ export const initialProducts: Product[] = [
   {
     id: 32,
     name: 'Shahryar Embroidered Royal Prince Coat',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Men',
     stitchType: 'Stitched',
     pieces: '3 Piece Prince Coat, Kurta & Trouser',
@@ -594,7 +595,7 @@ export const initialProducts: Product[] = [
   {
     id: 33,
     name: 'Ferozi Banarsi Silk Angrakha & Dupatta',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Women',
     stitchType: 'Stitched',
     pieces: '3 Piece Angrakha, Churidar & Net Dupatta',
@@ -611,7 +612,7 @@ export const initialProducts: Product[] = [
   {
     id: 34,
     name: 'Zardozi Raw Silk Formal Kalidar Ensemble',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Women',
     stitchType: 'Stitched',
     pieces: '3 Piece Kalidar Frock, Trouser & Organza Dupatta',
@@ -628,7 +629,7 @@ export const initialProducts: Product[] = [
   {
     id: 35,
     name: 'Darbar Hand-Embellished Velvet Sherwani',
-    category: 'Festive Couture',
+    category: 'Festive Wear',
     gender: 'Men',
     stitchType: 'Stitched',
     pieces: '2 Piece Velvet Sherwani & Trousers',
@@ -638,9 +639,9 @@ export const initialProducts: Product[] = [
     stock: 3,
     tag: 'Masterpiece',
     rating: 5.0,
-    reviewsCount: 22,
+    reviewsCount: 19,
     image: '/products/men_festive_sherwani.jpg',
-    description: 'Supreme Pakistani ceremonial sherwani tailored from plush Italian micro-velvet. Features intricate hand-embroidered royal crests, collar motifs, and custom-cast gold buttons.',
+    description: 'A sovereign black Italian micro-velvet sherwani encrusted with traditional gold zardozi on band-collar and cuffs. Complete with matching pure silk trousers.',
   },
 ]
 
@@ -650,7 +651,15 @@ export const categories = [
   'Women Unstitched',
   'Men Stitched',
   'Men Unstitched',
-  'Festive Couture',
+  'Festive Wear',
+]
+
+export const productCategories: ProductCategory[] = [
+  'Women Stitched',
+  'Women Unstitched',
+  'Men Stitched',
+  'Men Unstitched',
+  'Festive Wear',
 ]
 
 export const heroSlides: HeroSlide[] = [
@@ -658,13 +667,13 @@ export const heroSlides: HeroSlide[] = [
     id: 1,
     eyebrow: 'Pakistani Ethnic Heritage & Shalwar Qameez · 2026',
     title: 'Authentic Eastern Craftsmanship. Cut in Lahore.',
-    subtitle: 'From pure Giza latha and 6-pound Chinese Boski for men, to embroidered unstitched 3-piece lawn and festive zardozi couture for women.',
+    subtitle: 'From pure Giza latha and 6-pound Chinese Boski for men, to embroidered unstitched 3-piece lawn and festive party wear for women.',
     tag: 'Eid Capsule Live',
     image: '/products/women_lawn_suit.jpg',
   },
   {
     id: 2,
-    eyebrow: 'Men’s Traditional Shalwar Kameez & Boski Atelier',
+    eyebrow: 'Men’s Traditional Shalwar Kameez & Pure Boski',
     title: 'Crisp Latha, Royal Kurtas & Jamawar Waistcoats.',
     subtitle: 'Discover impeccably tailored men’s shalwar suits, embroidered wedding prince coats, and 4.5-meter unstitched Boski fabric boxes.',
     tag: 'Men’s Heritage Collection',
@@ -672,9 +681,9 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: 3,
-    eyebrow: 'Unstitched 3-Piece & Bespoke Tailoring Studio',
+    eyebrow: 'Unstitched 3-Piece & Custom Tailoring',
     title: 'Your Vision, Meticulously Cut & Stitched.',
-    subtitle: 'Select from pure embroidered chiffon and lawn fabrics, or choose our master atelier custom tailoring add-on stitched to your exact body measurements.',
+    subtitle: 'Select from pure embroidered chiffon and lawn fabrics, or choose our custom stitching add-on stitched to your exact body measurements.',
     tag: 'Stitched & Unstitched',
     image: '/products/women_unstitched_rose.jpg',
   },
@@ -696,12 +705,12 @@ export const initialOrders: Order[] = [
     discount: 877,
     shipping: 0,
     total: 4973,
-    status: 'In Atelier',
+    status: 'In Stitching',
     trackingCode: 'TRX-849102-LHR',
     estimatedDelivery: '10 Sep 2026',
     customer: {
       name: 'Hira Ahmed',
-      email: 'hira.ahmed@example.com',
+      email: 'hira.ahmed@gmail.com',
       phone: '+92 301 8472910',
       city: 'Islamabad',
       address: 'House 18, Street 4, Sector F-7/2',
@@ -729,7 +738,7 @@ export const initialOrders: Order[] = [
     estimatedDelivery: '14 Aug 2026',
     customer: {
       name: 'Hira Ahmed',
-      email: 'hira.ahmed@example.com',
+      email: 'hira.ahmed@gmail.com',
       phone: '+92 301 8472910',
       city: 'Islamabad',
       address: 'House 18, Street 4, Sector F-7/2',
@@ -740,7 +749,7 @@ export const initialOrders: Order[] = [
 
 export const initialBespokeRequests: BespokeRequest[] = [
   {
-    id: 'BESPOKE-2026-742',
+    id: 'CUSTOM-2026-742',
     date: '22 Aug 2026',
     fabric: 'Korean Raw Silk',
     silhouette: 'Kalidar Anarkali Frock',
@@ -777,11 +786,11 @@ export const initialAddresses: Address[] = [
 
 export const initialUserProfile: UserProfile = {
   name: 'Hira Ahmed',
-  email: 'hira.ahmed@example.com',
+  email: 'hira.ahmed@gmail.com',
   phone: '+92 301 8472910',
   city: 'Islamabad',
   avatarInitial: 'H',
-  tier: 'Silver Member',
+  tier: 'Gold VIP Member',
   points: 850,
   walletBalance: 2500,
   memberSince: 'March 2024',

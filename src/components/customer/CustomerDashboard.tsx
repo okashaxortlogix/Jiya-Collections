@@ -290,7 +290,7 @@ export function CustomerDashboard({
                         <h4>Order #{orders[0].id}</h4>
                       </div>
                       <span className={`status-tag ${orders[0].status.toLowerCase().replace(' ', '-')}`}>
-                        {orders[0].status === 'In Atelier' ? 'In Stitching' : orders[0].status}
+                        {orders[0].status}
                       </span>
                     </div>
 
@@ -301,9 +301,8 @@ export function CustomerDashboard({
                     {/* Stepper tracker */}
                     <div className="order-stepper">
                       {['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].map((step, idx) => {
-                        const activeIdx = ['Confirmed', 'In Atelier', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(orders[0].status)
-                        const normalizedActiveIdx = activeIdx >= 2 ? (activeIdx === 2 ? 1 : activeIdx - 1) : activeIdx
-                        const isDone = normalizedActiveIdx >= idx
+                        const activeIdx = ['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(orders[0].status)
+                        const isDone = activeIdx >= idx
                         return (
                           <div key={step} className={`step-node ${isDone ? 'done' : ''}`}>
                             <span className="node-circle">{isDone ? '✓' : idx + 1}</span>
@@ -459,7 +458,7 @@ export function CustomerDashboard({
 
                       <div className="coh-status">
                         <span className={`status-tag ${order.status.toLowerCase().replace(' ', '-')}`}>
-                          {order.status === 'In Atelier' ? 'In Stitching' : order.status}
+                          {order.status}
                         </span>
                         <strong className="order-grand-total">{formatPrice(order.total)}</strong>
                       </div>
@@ -468,9 +467,8 @@ export function CustomerDashboard({
                     {/* Timeline Stepper */}
                     <div className="order-stepper">
                       {['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].map((step, idx) => {
-                        const activeIdx = ['Confirmed', 'In Atelier', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(order.status)
-                        const normalizedActiveIdx = activeIdx >= 2 ? (activeIdx === 2 ? 1 : activeIdx - 1) : activeIdx
-                        const isDone = normalizedActiveIdx >= idx
+                        const activeIdx = ['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(order.status)
+                        const isDone = activeIdx >= idx
                         return (
                           <div key={step} className={`step-node ${isDone ? 'done' : ''}`}>
                             <span className="node-circle">{isDone ? '✓' : idx + 1}</span>

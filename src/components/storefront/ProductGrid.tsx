@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react'
 import type { Product } from '../../types'
 import { ProductCard } from './ProductCard'
 
@@ -40,8 +41,29 @@ export function ProductGrid({
   onQuickAdd,
   formatPrice,
 }: ProductGridProps) {
+  const [viewMode, setViewMode] = useState<'slider' | 'grid'>('slider')
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const productsScrollRef = useRef<HTMLDivElement>(null)
+
   const hasActiveFilters =
     activeCategory !== 'All pieces' || search || priceMax < 20000 || inStockOnly
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabsRef.current) {
+      const offset = direction === 'left' ? -260 : 260
+      tabsRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+    }
+  }
+
+  const scrollProducts = (direction: 'left' | 'right') => {
+    if (productsScrollRef.current) {
+      const scrollAmount = Math.max(340, productsScrollRef.current.clientWidth * 0.75)
+      productsScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
 
   return (
     <main className="shop-container" id="shop">
@@ -55,23 +77,64 @@ export function ProductGrid({
         </div>
 
         <div className="shop-controls">
-          {/* Category Filter Tabs */}
-          <div className="category-tabs" role="tablist">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                role="tab"
-                aria-selected={activeCategory === cat}
-                className={`category-tab-btn ${activeCategory === cat ? 'active' : ''}`}
-                onClick={() => onSelectCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
+          {/* Category Filter Tabs with Left & Right Arrow Buttons */}
+          <div className="category-tabs-container">
+            <button
+              type="button"
+              className="cat-scroll-arrow left"
+              onClick={() => scrollTabs('left')}
+              aria-label="Scroll categories left"
+              title="Previous categories"
+            >
+              ‹
+            </button>
+
+            <div className="category-tabs" ref={tabsRef} role="tablist">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  role="tab"
+                  aria-selected={activeCategory === cat}
+                  className={`category-tab-btn ${activeCategory === cat ? 'active' : ''}`}
+                  onClick={() => onSelectCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="cat-scroll-arrow right"
+              onClick={() => scrollTabs('right')}
+              aria-label="Scroll categories right"
+              title="More categories"
+            >
+              ›
+            </button>
           </div>
 
-          {/* Filter & Sort Trigger */}
+          {/* Controls: View Switcher & Filter Trigger */}
           <div className="sort-filter-actions">
+            <div className="view-mode-toggle" title="Switch layout">
+              <button
+                type="button"
+                className={`view-btn ${viewMode === 'slider' ? 'active' : ''}`}
+                onClick={() => setViewMode('slider')}
+                title="Horizontal Slider with Left/Right side buttons"
+              >
+                <span>⇄ Slider</span>
+              </button>
+              <button
+                type="button"
+                className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                onClick={() => setViewMode('grid')}
+                title="Full Grid View"
+              >
+                <span>⊞ Grid</span>
+              </button>
+            </div>
+
             <button
               className="filter-toggle-btn"
               onClick={onOpenFilterDrawer}
@@ -123,23 +186,52 @@ export function ProductGrid({
         </div>
       )}
 
-      {/* Product Cards Grid */}
-      <div className="products-grid">
-        {products.map((product) => {
-          const isSaved = wishlist.includes(product.id)
-          return (
-            <ProductCard
-              key={product.id}
-              product={product}
-              isSaved={isSaved}
-              formattedPrice={formatPrice(product.price)}
-              formattedOldPrice={product.oldPrice ? formatPrice(product.oldPrice) : undefined}
-              onToggleWishlist={onToggleWishlist}
-              onQuickView={onQuickView}
-              onQuickAdd={onQuickAdd}
-            />
-          )
-        })}
+      {/* Product Showcase with Left & Right Side Navigation Buttons */}
+      <div className="products-showcase-wrapper">
+        {viewMode === 'slider' && products.length > 0 && (
+          <button
+            type="button"
+            className="products-scroll-arrow left"
+            onClick={() => scrollProducts('left')}
+            aria-label="Scroll products left"
+            title="Previous items (Left)"
+          >
+            ‹
+          </button>
+        )}
+
+        <div
+          className={`products-container ${viewMode === 'slider' ? 'slider-mode' : 'grid-mode'}`}
+          ref={productsScrollRef}
+        >
+          {products.map((product) => {
+            const isSaved = wishlist.includes(product.id)
+            return (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isSaved={isSaved}
+                formattedPrice={formatPrice(product.price)}
+                formattedOldPrice={product.oldPrice ? formatPrice(product.oldPrice) : undefined}
+                onToggleWishlist={onToggleWishlist}
+                onQuickView={onQuickView}
+                onQuickAdd={onQuickAdd}
+              />
+            )
+          })}
+        </div>
+
+        {viewMode === 'slider' && products.length > 0 && (
+          <button
+            type="button"
+            className="products-scroll-arrow right"
+            onClick={() => scrollProducts('right')}
+            aria-label="Scroll products right"
+            title="Next items (Right)"
+          >
+            ›
+          </button>
+        )}
       </div>
 
       {products.length === 0 && (

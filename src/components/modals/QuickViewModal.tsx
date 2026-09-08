@@ -117,7 +117,7 @@ export function QuickViewModal({
             <p className="size-tier-hint">
               {product.stitchType === 'Unstitched'
                 ? '* Standard tiers (XS–M) provide the luxury unstitched fabric box with all embroidered borders/patches. L, XL, or Custom include expert master-darzi custom tailoring to your measurements.'
-                : '* Ready-to-wear sizes L & XL include extra fabric yardage and customized ease. Custom includes bespoke pattern drafting to your body measurements.'}
+                : '* Ready-to-wear sizes L & XL include extra fabric yardage and customized ease. Custom includes custom tailoring to your exact body measurements.'}
             </p>
           </div>
 

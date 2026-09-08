@@ -114,7 +114,7 @@ export function ProductCard({
           {product.stitchType === 'Unstitched' ? (
             <span>✂ Unstitched Fabric Cut · Custom Tailoring Available</span>
           ) : (
-            <span>✦ Ready to Wear · Sizes XS – XL & Bespoke Fit</span>
+            <span>✦ Ready to Wear · Sizes XS – XL & Custom Fit</span>
           )}
         </div>
       </div>

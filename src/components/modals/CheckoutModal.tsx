@@ -33,12 +33,12 @@ export function CheckoutModal({
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null)
 
   const [form, setForm] = useState({
-    name: 'Hira Ahmed',
-    email: 'hira.ahmed@example.com',
-    phone: '+92 301 8472910',
-    city: 'Islamabad',
-    address: 'House 18, Street 4, Sector F-7/2',
-    notes: 'Please call before delivery',
+    name: '',
+    email: '',
+    phone: '',
+    city: 'Lahore',
+    address: '',
+    notes: '',
     paymentMethod: 'Cash on Delivery',
   })
 
@@ -98,6 +98,7 @@ export function CheckoutModal({
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Ayesha Khan"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
@@ -107,6 +108,7 @@ export function CheckoutModal({
                 <input
                   type="tel"
                   required
+                  placeholder="e.g. 0301 2345678"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
@@ -119,6 +121,7 @@ export function CheckoutModal({
                 <input
                   type="email"
                   required
+                  placeholder="e.g. ayesha@gmail.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -196,7 +199,7 @@ export function CheckoutModal({
                 {
                   id: 'Direct Bank Transfer',
                   title: 'Direct Bank Transfer (IBFT)',
-                  desc: 'Meezan Bank · A/C: 0284010482910 · Jiya Collections Atelier',
+                  desc: 'Meezan Bank · A/C: 0284010482910 · Jiya Collections',
                   icon: '🏦',
                 },
                 {
@@ -231,6 +234,127 @@ export function CheckoutModal({
                 </label>
               ))}
             </div>
+
+            {/* Contextual Payment Gateway Form & Instructions */}
+            {form.paymentMethod === 'Credit / Debit Card' && (
+              <div className="payment-subpanel">
+                <div className="subpanel-badge card-badge-tag">
+                  <span>🔒 256-Bit SSL Encrypted Card Processing (Stripe / PayFast / Safepay Ready)</span>
+                </div>
+                <div className="subpanel-grid">
+                  <div className="subpanel-full">
+                    <label>Card Number</label>
+                    <input
+                      type="text"
+                      placeholder="4242 •••• •••• 4242"
+                      maxLength={19}
+                      className="checkout-subinput"
+                    />
+                  </div>
+                  <div>
+                    <label>Expiry Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM / YY"
+                      maxLength={5}
+                      className="checkout-subinput"
+                    />
+                  </div>
+                  <div>
+                    <label>CVV / CVC</label>
+                    <input
+                      type="password"
+                      placeholder="123"
+                      maxLength={4}
+                      className="checkout-subinput"
+                    />
+                  </div>
+                  <div className="subpanel-full">
+                    <label>Name on Card</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Ayesha Malik"
+                      className="checkout-subinput"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {form.paymentMethod === 'JazzCash / EasyPaisa' && (
+              <div className="payment-subpanel">
+                <div className="subpanel-badge wallet-badge-tag">
+                  <span>📱 Instant Mobile Wallet Payment (Direct Merchant Prompt)</span>
+                </div>
+                <div className="subpanel-text">
+                  Enter your registered mobile wallet account number. An instant push notification / MPIN prompt will be sent to your mobile phone.
+                </div>
+                <div className="subpanel-grid">
+                  <div>
+                    <label>Account Mobile Number</label>
+                    <input
+                      type="tel"
+                      placeholder="0300 1234567"
+                      className="checkout-subinput"
+                    />
+                  </div>
+                  <div>
+                    <label>Last 6 Digits of CNIC</label>
+                    <input
+                      type="text"
+                      placeholder="123456"
+                      maxLength={6}
+                      className="checkout-subinput"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {form.paymentMethod === 'Direct Bank Transfer' && (
+              <div className="payment-subpanel">
+                <div className="subpanel-badge bank-badge-tag">
+                  <span>🏦 Official Islamic Banking IBFT Details</span>
+                </div>
+                <div className="bank-specs-card">
+                  <div className="spec-row">
+                    <span>Account Title:</span>
+                    <strong>Jiya Collections Pvt Ltd</strong>
+                  </div>
+                  <div className="spec-row">
+                    <span>Bank:</span>
+                    <strong>Meezan Bank Ltd (Gulberg Branch, Lahore)</strong>
+                  </div>
+                  <div className="spec-row">
+                    <span>Account No:</span>
+                    <strong>0284 0104 8291 001</strong>
+                  </div>
+                  <div className="spec-row">
+                    <span>IBAN:</span>
+                    <strong>PK42 MEZN 0002 8401 0482 9101</strong>
+                  </div>
+                </div>
+                <div style={{ marginTop: '10px' }}>
+                  <label>Transaction ID / IBFT Reference</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. TXN-8492049 or Bank Ref #"
+                    className="checkout-subinput"
+                  />
+                </div>
+              </div>
+            )}
+
+            {form.paymentMethod === 'Cash on Delivery' && (
+              <div className="payment-subpanel cod-subpanel">
+                <div className="subpanel-badge cod-badge-tag">
+                  <span>💵 Cash on Delivery (Pakistan Nationwide)</span>
+                </div>
+                <p className="cod-note">
+                  Pay in cash when courier arrives at your doorstep. You will receive an SMS and WhatsApp tracking update within minutes.
+                </p>
+              </div>
+            )}
 
             <div className="order-summary-box">
               <h4>Order Summary ({cart.length} unique pieces)</h4>

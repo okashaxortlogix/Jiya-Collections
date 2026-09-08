@@ -347,56 +347,60 @@ export default function App() {
       {/* Universal Floating Toast Alerts */}
       <ToastContainer toasts={toasts} />
 
-      {/* Top Announcement Bar & Currency Selector */}
-      <AnnouncementBar
-        announcementText={announcementText}
-        currentCurrency={currency}
-        onCurrencyChange={(c) => {
-          setCurrency(c)
-          showToast(`Currency switched to ${c}`, 'info')
-        }}
-        onCopyPromo={(code) => {
-          navigator.clipboard?.writeText?.(code)
-          handleApplyCoupon(code)
-        }}
-      />
+      {/* Top Announcement Bar & Currency Selector (Hidden on dedicated Account Page) */}
+      {!isAccountPage && (
+        <AnnouncementBar
+          announcementText={announcementText}
+          currentCurrency={currency}
+          onCurrencyChange={(c) => {
+            setCurrency(c)
+            showToast(`Currency switched to ${c}`, 'info')
+          }}
+          onCopyPromo={(code) => {
+            navigator.clipboard?.writeText?.(code)
+            handleApplyCoupon(code)
+          }}
+        />
+      )}
 
-      {/* Sticky Luxury Header */}
-      <Header
-        brandName={brandName}
-        search={search}
-        onSearchChange={(q) => {
-          setSearch(q)
-          if (q.trim() && activeCategory !== 'All pieces') {
-            setActiveCategory('All pieces')
-          }
-        }}
-        onClearSearch={() => setSearch('')}
-        products={products}
-        onQuickView={handleOpenProduct}
-        formatPrice={formatPrice}
-        wishlistCount={wishlist.length}
-        cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
-        mobileMenuOpen={mobileMenuOpen}
-        onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
-        onScrollTo={(id) => {
-          if (selectedProduct) handleCloseProduct()
-          if (isAccountPage) handleCloseAccountPage()
-          scrollTo(id)
-        }}
-        onOpenModal={(m) => {
-          if (m === 'account') {
-            handleOpenAccountPage()
-          } else {
-            setActiveModal(m)
-          }
-        }}
-        onCategorySelect={(cat) => {
-          if (selectedProduct) handleCloseProduct()
-          if (isAccountPage) handleCloseAccountPage()
-          setActiveCategory(cat)
-        }}
-      />
+      {/* Sticky Luxury Header (Hidden on dedicated Account Page to prevent double top bar) */}
+      {!isAccountPage && (
+        <Header
+          brandName={brandName}
+          search={search}
+          onSearchChange={(q) => {
+            setSearch(q)
+            if (q.trim() && activeCategory !== 'All pieces') {
+              setActiveCategory('All pieces')
+            }
+          }}
+          onClearSearch={() => setSearch('')}
+          products={products}
+          onQuickView={handleOpenProduct}
+          formatPrice={formatPrice}
+          wishlistCount={wishlist.length}
+          cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+          mobileMenuOpen={mobileMenuOpen}
+          onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
+          onScrollTo={(id) => {
+            if (selectedProduct) handleCloseProduct()
+            if (isAccountPage) handleCloseAccountPage()
+            scrollTo(id)
+          }}
+          onOpenModal={(m) => {
+            if (m === 'account') {
+              handleOpenAccountPage()
+            } else {
+              setActiveModal(m)
+            }
+          }}
+          onCategorySelect={(cat) => {
+            if (selectedProduct) handleCloseProduct()
+            if (isAccountPage) handleCloseAccountPage()
+            setActiveCategory(cat)
+          }}
+        />
+      )}
 
       {/* 1. SEPARATE DEDICATED ACCOUNT PAGE (Daraz style) */}
       {isAccountPage ? (
@@ -509,7 +513,7 @@ export default function App() {
             onCategorySelect={(cat) => setActiveCategory(cat)}
             onOpenModal={(m) => setActiveModal(m)}
             onScrollTo={scrollTo}
-            onNewsletterSubscribe={() => showToast('Thank you for subscribing to our Gazette!', 'success')}
+            onNewsletterSubscribe={() => showToast('Thank you for subscribing to our newsletter! Code EID2026 saved.', 'success')}
           />
         </>
       )}
@@ -681,7 +685,7 @@ export default function App() {
       {activeModal === 'contact' && (
         <ContactModal
           onClose={() => setActiveModal(null)}
-          onSuccess={() => showToast('Message sent to our Lahore concierge!', 'success')}
+          onSuccess={() => showToast('Message sent to our customer support team!', 'success')}
         />
       )}
 

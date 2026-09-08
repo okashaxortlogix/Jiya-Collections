@@ -70,7 +70,7 @@ export function AdminLoginModal({
 
         <div className="admin-login-header">
           <div className="admin-lock-seal">🔒</div>
-          <span className="drawer-eyebrow">Restricted Atelier Access</span>
+          <span className="drawer-eyebrow">Restricted Admin Access</span>
           <h2 className="drawer-title">Staff Operations Portal</h2>
           <p className="admin-login-sub">
             Please enter your administrative credentials to manage inventory, customer dispatches,

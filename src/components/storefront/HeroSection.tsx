@@ -37,7 +37,7 @@ export function HeroSection({
                   <span className="arrow-glyph">→</span>
                 </button>
                 <button className="btn-secondary-luxury" onClick={onBespokeClick}>
-                  <span>Bespoke Couture</span>
+                  <span>Custom Stitching</span>
                   <span className="plus-glyph">+</span>
                 </button>
               </div>
@@ -48,7 +48,7 @@ export function HeroSection({
                   <span>Chinese Boski · Egyptian Latha · Supima Lawn · Fine Karandi</span>
                 </div>
                 <div className="highlight-item">
-                  <strong>Complimentary Shipping</strong>
+                  <strong>Free Shipping</strong>
                   <span>Pakistan-wide on orders over Rs. 8,000</span>
                 </div>
               </div>
@@ -58,7 +58,7 @@ export function HeroSection({
               <div className="hero-image-frame">
                 <img src={slide.image} alt={slide.title} className="hero-cover-img" />
                 <div className="hero-floating-badge">
-                  <span className="badge-seal">LAHORI ATELIER</span>
+                  <span className="badge-seal">MADE IN LAHORE</span>
                   <span className="badge-caption">{slide.tag}</span>
                 </div>
               </div>
