@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import type { CartItem, Order } from '../../types'
+import type { CartItem, Order, UserProfile } from '../../types'
 
 interface CheckoutModalProps {
   cart: CartItem[]
@@ -13,6 +13,7 @@ interface CheckoutModalProps {
   onCompleteOrder: (order: Order) => void
   onOpenAccountPortal: () => void
   formatPrice: (pkr: number) => string
+  customerProfile?: UserProfile | null
 }
 
 let nextCheckoutOrderId = 9200
@@ -28,15 +29,16 @@ export function CheckoutModal({
   onCompleteOrder,
   onOpenAccountPortal,
   formatPrice,
+  customerProfile,
 }: CheckoutModalProps) {
   const [checkoutStep, setCheckoutStep] = useState<'details' | 'payment' | 'success'>('details')
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null)
 
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    city: 'Lahore',
+    name: customerProfile?.name || '',
+    email: customerProfile?.email || '',
+    phone: customerProfile?.phone || '',
+    city: customerProfile?.city || 'Lahore',
     address: '',
     notes: '',
     paymentMethod: 'Cash on Delivery',

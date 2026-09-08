@@ -17,6 +17,8 @@ interface HeaderProps {
   onScrollTo: (id: string) => void
   onOpenModal: (modal: 'wishlist' | 'cart' | 'account' | 'admin' | 'custom' | 'size' | 'policy' | 'contact') => void
   onCategorySelect?: (cat: string) => void
+  isCustomerLoggedIn?: boolean
+  customerName?: string
 }
 
 const TRENDING_SEARCHES = [
@@ -43,6 +45,8 @@ export function Header({
   onScrollTo,
   onOpenModal,
   onCategorySelect,
+  isCustomerLoggedIn = true,
+  customerName,
 }: HeaderProps) {
   const [isFocused, setIsFocused] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
@@ -329,11 +333,11 @@ export function Header({
           <button
             className="util-btn account-util"
             onClick={() => onOpenModal('account')}
-            aria-label="Customer Account & Orders"
-            title="My Account & Dashboard"
+            aria-label={isCustomerLoggedIn ? `Customer Account (${customerName})` : 'Sign In / Register'}
+            title={isCustomerLoggedIn ? `Logged in as ${customerName}` : 'Sign In / Register'}
           >
             <span className="util-icon">👤</span>
-            <span className="util-text">Account</span>
+            <span className="util-text">{isCustomerLoggedIn ? (customerName?.split(' ')[0] || 'Account') : 'Sign In'}</span>
           </button>
 
           {/* Shopping Cart Button */}
@@ -417,7 +421,7 @@ export function Header({
               onOpenModal('account')
             }}
           >
-            👤 My Account & Order Tracking →
+            👤 {isCustomerLoggedIn ? `My Account (${customerName}) →` : 'Sign In / Register →'}
           </button>
           <button
             className="mobile-service-link"

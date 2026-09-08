@@ -95,12 +95,51 @@ export default function App() {
     percent: 15,
   })
 
-  // Customer Portal State
-  const [userProfile, setUserProfile] = useState<UserProfile>(initialUserProfile)
+  // Customer Portal State & Authentication
+  const [isCustomerLoggedIn, setIsCustomerLoggedIn] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('jiya_customer_session')
+      return saved !== null ? JSON.parse(saved) : true
+    } catch {
+      return true
+    }
+  })
+  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
+    try {
+      const saved = localStorage.getItem('jiya_customer_profile')
+      return saved ? JSON.parse(saved) : initialUserProfile
+    } catch {
+      return initialUserProfile
+    }
+  })
   const [sizingProfile, setSizingProfile] = useState<SizingProfile>(initialSizingProfile)
   const [orders, setOrders] = useState<Order[]>(initialOrders)
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses)
   const [bespokeRequests, setBespokeRequests] = useState<BespokeRequest[]>(initialBespokeRequests)
+
+  const handleCustomerLogin = (user: UserProfile) => {
+    setUserProfile(user)
+    setIsCustomerLoggedIn(true)
+    try {
+      localStorage.setItem('jiya_customer_session', 'true')
+      localStorage.setItem('jiya_customer_profile', JSON.stringify(user))
+    } catch {}
+  }
+
+  const handleCustomerLogout = () => {
+    setIsCustomerLoggedIn(false)
+    try {
+      localStorage.setItem('jiya_customer_session', 'false')
+    } catch {}
+    showToast('You have been logged out from your account', 'info')
+  }
+
+  const handleUpdateUserProfile = (p: UserProfile) => {
+    setUserProfile(p)
+    try {
+      localStorage.setItem('jiya_customer_profile', JSON.stringify(p))
+    } catch {}
+  }
 
   // Modals & Assistant State
   const [activeModal, setActiveModal] = useState<ModalType>(null)
@@ -399,6 +438,8 @@ export default function App() {
             if (isAccountPage) handleCloseAccountPage()
             setActiveCategory(cat)
           }}
+          isCustomerLoggedIn={isCustomerLoggedIn}
+          customerName={userProfile.name}
         />
       )}
 
@@ -413,7 +454,7 @@ export default function App() {
           bespokeRequests={bespokeRequests}
           userProfile={userProfile}
           sizingProfile={sizingProfile}
-          onUpdateUserProfile={setUserProfile}
+          onUpdateUserProfile={handleUpdateUserProfile}
           onUpdateSizingProfile={setSizingProfile}
           onAddAddress={(newAddr) => {
             setAddresses((prev) => [...prev, { ...newAddr, id: ++nextAddressCounter }])
@@ -441,6 +482,9 @@ export default function App() {
           cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
           onOpenCart={() => setActiveModal('cart')}
           onSelectProduct={handleOpenProduct}
+          isLoggedIn={isCustomerLoggedIn}
+          onLogout={handleCustomerLogout}
+          onLogin={handleCustomerLogin}
         />
       ) : selectedProduct ? (
         <ProductDetailPage
@@ -639,6 +683,7 @@ export default function App() {
           shippingCost={shippingCost}
           cartTotal={cartTotal}
           appliedCoupon={appliedCoupon}
+          customerProfile={isCustomerLoggedIn ? userProfile : null}
           onClose={() => setActiveModal(null)}
           onCompleteOrder={(newOrder) => {
             setOrders((prev) => [newOrder, ...prev])

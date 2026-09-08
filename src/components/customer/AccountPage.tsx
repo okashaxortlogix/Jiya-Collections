@@ -11,6 +11,8 @@ import type {
 } from '../../types'
 import { calculateSizePrice } from '../../data/initialData'
 
+import { CustomerAuthCard } from './CustomerAuthCard'
+
 interface AccountPageProps {
   onBack: () => void
   orders: Order[]
@@ -34,6 +36,9 @@ interface AccountPageProps {
   cartCount: number
   onOpenCart: () => void
   onSelectProduct?: (product: Product) => void
+  isLoggedIn?: boolean
+  onLogout?: () => void
+  onLogin?: (user: UserProfile) => void
 }
 
 type DashboardTab =
@@ -69,6 +74,9 @@ export function AccountPage({
   cartCount,
   onOpenCart,
   onSelectProduct,
+  isLoggedIn = true,
+  onLogout,
+  onLogin,
 }: AccountPageProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview')
   const [orderFilter, setOrderFilter] = useState<'all' | 'active' | 'delivered'>('all')
@@ -108,13 +116,13 @@ export function AccountPage({
   const handleProfileSave = (e: FormEvent) => {
     e.preventDefault()
     onUpdateUserProfile(editProfile)
-    showToast('Profile information successfully updated!', 'success')
+    showToast('Client profile updated successfully!', 'success')
   }
 
   const handleSizingSave = (e: FormEvent) => {
     e.preventDefault()
     onUpdateSizingProfile(editSizing)
-    showToast('Body measurements saved to your account!', 'success')
+    showToast('Custom sizing profile saved! Master tailors will cut to these specs.', 'success')
   }
 
   const handleAddressSubmit = (e: FormEvent) => {
@@ -123,7 +131,7 @@ export function AccountPage({
     onAddAddress(newAddr)
     setShowAddAddressModal(false)
     setNewAddr({ name: '', phone: '', city: 'Islamabad', address: '', isDefault: false })
-    showToast('New delivery address added!', 'success')
+    showToast('New shipping address saved!', 'success')
   }
 
   const handleExchangeSubmit = (e: FormEvent) => {
@@ -138,6 +146,56 @@ export function AccountPage({
   }
 
   const sizeList: SizeOption[] = ['XS', 'S', 'M', 'L', 'XL', 'Custom']
+
+  // If user is logged out, show modern customer auth view
+  if (!isLoggedIn) {
+    return (
+      <div className="account-page-wrapper">
+        <nav className="account-top-bar" aria-label="Account navigation">
+          <div className="account-top-bar-inner">
+            <button
+              type="button"
+              className="account-back-btn"
+              onClick={onBack}
+              aria-label="Back to store"
+            >
+              <span className="account-back-arrow">←</span>
+              <span className="account-back-text">Store</span>
+            </button>
+
+            <div className="account-top-title-group">
+              <span className="account-top-title">JIYA COLLECTIONS</span>
+              <span className="account-top-subtitle">Client Portal & VIP Lounge</span>
+            </div>
+
+            <div className="account-top-actions">
+              <button
+                type="button"
+                className="account-icon-btn"
+                onClick={onOpenCart}
+                title="Shopping Cart"
+                aria-label="Shopping Cart"
+              >
+                🛒
+                {cartCount > 0 && <span className="account-badge">{cartCount}</span>}
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <main className="account-page-main">
+          <CustomerAuthCard
+            onLoginSuccess={(user) => {
+              onUpdateUserProfile(user)
+              if (onLogin) onLogin(user)
+            }}
+            showToast={showToast}
+            onBackToStore={onBack}
+          />
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="account-page-wrapper">
@@ -160,6 +218,16 @@ export function AccountPage({
           </div>
 
           <div className="account-top-actions">
+            {onLogout && (
+              <button
+                type="button"
+                className="account-top-logout-btn"
+                onClick={onLogout}
+                title="Log Out from Account"
+              >
+                <span>🚪</span> Log Out
+              </button>
+            )}
             <button
               type="button"
               className={`account-icon-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
@@ -197,6 +265,16 @@ export function AccountPage({
               <div className="ah-name-line">
                 <h2>{userProfile.name}</h2>
                 <span className="ah-tier-pill">👑 {userProfile.tier || 'Gold VIP'}</span>
+                {onLogout && (
+                  <button
+                    type="button"
+                    className="ah-hero-logout-btn"
+                    onClick={onLogout}
+                    title="Log Out from Account"
+                  >
+                    🚪 Log Out
+                  </button>
+                )}
               </div>
               <div className="ah-details-line">
                 <span>📍 {userProfile.city}, PK</span>
@@ -1068,6 +1146,26 @@ export function AccountPage({
                   Update Profile Details ✓
                 </button>
               </form>
+
+              {/* Account Security & Logout Section */}
+              <div className="account-session-card">
+                <div className="asc-info">
+                  <span className="asc-badge">Active VIP Session</span>
+                  <h4>Security & Account Session</h4>
+                  <p>
+                    Logged in as <strong>{userProfile.name}</strong> ({userProfile.email} · {userProfile.phone})
+                  </p>
+                </div>
+                {onLogout && (
+                  <button
+                    type="button"
+                    className="btn-logout-danger"
+                    onClick={onLogout}
+                  >
+                    <span>🚪</span> Log Out from This Device
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
