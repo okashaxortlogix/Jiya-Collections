@@ -138,15 +138,21 @@ export function CustomerDashboard({
         role="dialog"
         aria-label="Customer Account Portal"
       >
-        {/* Modern Clean Client Header */}
+        {/* Modern Clean Client Header (Daraz / Shopify VIP standard) */}
         <header className="client-suite-header">
-          <button
-            className="suite-close-btn"
-            onClick={onClose}
-            aria-label="Close customer portal"
-          >
-            ✕
-          </button>
+          <div className="client-header-top-bar">
+            <div className="suite-title-meta">
+              <span className="suite-app-badge">JIYA CLIENT SUITE</span>
+              <h3 className="suite-dialog-title">Account & Orders</h3>
+            </div>
+            <button
+              className="suite-close-btn"
+              onClick={onClose}
+              aria-label="Close customer portal"
+            >
+              ✕
+            </button>
+          </div>
 
           <div className="client-header-left">
             <div className="client-avatar-ring">
@@ -156,11 +162,13 @@ export function CustomerDashboard({
             <div className="client-identity">
               <div className="client-name-row">
                 <h2>{userProfile.name}</h2>
-                <span className="client-tier-pill">{userProfile.tier || 'Silver Member'}</span>
+                <span className="client-tier-pill">👑 {userProfile.tier || 'VIP Gold'}</span>
               </div>
-              <p className="client-meta-line">
-                {userProfile.city}, Pakistan · Member since {userProfile.memberSince} · {userProfile.phone}
-              </p>
+              <div className="client-meta-line">
+                <span>📍 {userProfile.city}, PK</span>
+                <span>📞 {userProfile.phone}</span>
+                <span>📅 Member since {userProfile.memberSince}</span>
+              </div>
             </div>
           </div>
 
@@ -175,11 +183,11 @@ export function CustomerDashboard({
             </div>
             <div className="kpi-pill" onClick={() => setActiveTab('loyalty')} title="View Wallet Balance">
               <span className="kpi-pill-val">{formatPrice(userProfile.walletBalance)}</span>
-              <span className="kpi-pill-lbl">Wallet Balance</span>
+              <span className="kpi-pill-lbl">Wallet</span>
             </div>
             <div className="kpi-pill" onClick={() => setActiveTab('wishlist')} title="View Wishlist">
               <span className="kpi-pill-val">{wishlist.length}</span>
-              <span className="kpi-pill-lbl">Wishlist</span>
+              <span className="kpi-pill-lbl">Saved Items</span>
             </div>
           </div>
         </header>
@@ -496,34 +504,34 @@ export function CustomerDashboard({
                         <small>Deliver to: {order.customer.address}, {order.customer.city}</small>
                       </div>
 
-                      <div className="cof-actions">
+                      <div className="cof-actions order-actions-bar">
                         <button
                           type="button"
                           className="btn-primary-luxury sm"
                           onClick={() => setTrackingOrder(order)}
                         >
-                          Track Delivery 🚚
+                          🚚 Track Delivery
                         </button>
                         <button
                           type="button"
                           className="btn-outline-luxury sm"
                           onClick={() => setInvoiceOrder(order)}
                         >
-                          View Invoice 📄
+                          📄 View Invoice
                         </button>
                         <button
                           type="button"
                           className="btn-outline-luxury sm"
                           onClick={() => onReorder(order)}
                         >
-                          Reorder ↺
+                          ↺ Reorder
                         </button>
                         <button
                           type="button"
                           className="btn-outline-luxury sm"
                           onClick={() => setExchangeOrder(order)}
                         >
-                          Exchange / Return ⇄
+                          ⇄ Exchange
                         </button>
                       </div>
                     </div>
@@ -566,14 +574,14 @@ export function CustomerDashboard({
                 )}
               </div>
 
-              <div className="wishlist-products-grid">
+              <div className="wishlist-products-grid portal-wishlist-grid">
                 {products
                   .filter((p) => wishlist.includes(p.id))
                   .map((product) => {
                     const chosenSize = wishlistSizes[product.id] || 'M'
                     const chosenPrice = calculateSizePrice(product.price, chosenSize)
                     return (
-                      <div key={product.id} className="suite-wish-card">
+                      <div key={product.id} className="suite-wish-card portal-wish-card">
                         <div className="sw-img-wrap">
                           <img src={product.image} alt={product.name} />
                           {product.tag && <span className="sw-tag">{product.tag}</span>}
