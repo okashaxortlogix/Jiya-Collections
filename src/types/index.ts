@@ -54,6 +54,8 @@ export type Order = {
     address: string
     notes?: string
     paymentMethod: string
+    transactionId?: string
+    senderAccount?: string
   }
 }
 

@@ -548,6 +548,11 @@ export function AccountPage({
                     <div className="client-order-footer">
                       <div className="cof-left">
                         <span>Payment: {order.customer.paymentMethod}</span>
+                        {order.customer.transactionId && (
+                          <span style={{ display: 'block', fontSize: '11px', color: 'var(--terracotta)', fontFamily: 'var(--font-mono)' }}>
+                            TID: {order.customer.transactionId}
+                          </span>
+                        )}
                         <small>Deliver to: {order.customer.address}, {order.customer.city}</small>
                       </div>
 
@@ -1145,7 +1150,7 @@ export function AccountPage({
                 </div>
               ))}
               <div className="inv-total-row">
-                <span>Grand Total (Paid via {invoiceOrder.customer.paymentMethod}):</span>
+                <span>Grand Total ({invoiceOrder.customer.paymentMethod}{invoiceOrder.customer.transactionId ? ` · TID: ${invoiceOrder.customer.transactionId}` : ''}):</span>
                 <strong>{formatPrice(invoiceOrder.total)}</strong>
               </div>
             </div>

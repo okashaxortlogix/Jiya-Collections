@@ -3863,6 +3863,28 @@ body:has(.modal-backdrop) .floating-assistant-container {
   color: var(--ink-muted);
 }
 
+.pay-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.payment-tag-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(184, 82, 53, 0.1);
+  color: var(--terracotta);
+  border: 1px solid rgba(184, 82, 53, 0.25);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+
 /* Contextual Payment Details Subpanels */
 .payment-subpanel {
   background: var(--bg-surface);
@@ -3884,12 +3906,6 @@ body:has(.modal-backdrop) .floating-assistant-container {
   margin-bottom: 14px;
 }
 
-.card-badge-tag {
-  background: rgba(30, 70, 54, 0.08);
-  color: var(--emerald-rich);
-  border: 1px solid rgba(30, 70, 54, 0.2);
-}
-
 .wallet-badge-tag {
   background: rgba(197, 168, 110, 0.15);
   color: #8A6518;
@@ -3906,6 +3922,198 @@ body:has(.modal-backdrop) .floating-assistant-container {
   background: rgba(184, 82, 53, 0.08);
   color: var(--terracotta);
   border: 1px solid rgba(184, 82, 53, 0.2);
+}
+
+/* COD Reassurance Box */
+.cod-reassurance-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #FFF;
+  border: 1px solid rgba(184, 82, 53, 0.2);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+
+.cod-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.cod-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #1E6B37;
+  color: #FFF;
+  border-radius: 50%;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cod-point strong {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-charcoal);
+  margin-bottom: 2px;
+}
+
+.cod-point p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+
+/* JazzCash / EasyPaisa Switcher & Card */
+.wallet-switcher-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.wallet-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line-distinct);
+  background: #FFF;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--ink-charcoal);
+}
+
+.wallet-tab-btn:hover {
+  background: var(--bg-cream);
+}
+
+.wallet-tab-btn.active.jazzcash {
+  background: #D8232A;
+  color: #FFF;
+  border-color: #D8232A;
+}
+
+.wallet-tab-btn.active.easypaisa {
+  background: #00A651;
+  color: #FFF;
+  border-color: #00A651;
+}
+
+.account-details-card {
+  background: #FFF;
+  border: 1px solid var(--line-distinct);
+  border-radius: 6px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.account-detail-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.account-detail-line.highlight {
+  background: var(--bg-cream);
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px dashed var(--line-distinct);
+}
+
+.adl-label {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.adl-value {
+  color: var(--ink-charcoal);
+  font-family: var(--font-mono);
+}
+
+.adl-value.phone-number {
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.adl-value.price-tag {
+  color: var(--terracotta);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.copy-badge-btn, .copy-mini-btn {
+  background: var(--ink-charcoal);
+  color: #FFF;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.copy-badge-btn:hover, .copy-mini-btn:hover {
+  background: var(--terracotta);
+}
+
+.manual-transfer-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-cream);
+  padding: 12px 14px;
+  border-radius: 6px;
+  border-left: 3px solid var(--terracotta);
+}
+
+.mts-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-charcoal);
+  line-height: 1.4;
+}
+
+.mts-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--ink-charcoal);
+  color: #FFF;
+  border-radius: 50%;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.manual-hint {
+  display: block;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  font-style: italic;
 }
 
 .subpanel-text {
@@ -4103,6 +4311,110 @@ body:has(.modal-backdrop) .floating-assistant-container {
 
 .receipt-row span {
   color: var(--ink-muted);
+}
+
+.receipt-row.highlight-row {
+  background: rgba(184, 82, 53, 0.08);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px dashed rgba(184, 82, 53, 0.25);
+  margin: 2px 0;
+}
+
+/* Success Screen WhatsApp Card */
+.whatsapp-receipt-box {
+  background: #EBF7EE;
+  border: 1.5px solid #25D366;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 480px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.wrb-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.wrb-text h4 {
+  margin: 0 0 6px;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  color: #0E5C2D;
+}
+
+.wrb-text p {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: #2E5C3E;
+  line-height: 1.5;
+}
+
+.btn-whatsapp-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #25D366;
+  color: #FFF;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.btn-whatsapp-action:hover {
+  background: #1EBE5D;
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+  transform: translateY(-1px);
+}
+
+.cod-success-reassurance {
+  background: #FFF;
+  border: 1px solid var(--line-distinct);
+  border-radius: 8px;
+  padding: 18px;
+  max-width: 480px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.csr-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.csr-text h4 {
+  margin: 0 0 4px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+}
+
+.csr-text p {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+
+.btn-whatsapp-secondary {
+  display: inline-block;
+  color: #1E6B37;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(30, 107, 55, 0.3);
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.btn-whatsapp-secondary:hover {
+  background: rgba(30, 107, 55, 0.08);
 }
 
 .success-actions {

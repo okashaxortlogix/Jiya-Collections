@@ -499,6 +499,11 @@ export function CustomerDashboard({
                     <div className="client-order-footer">
                       <div className="cof-left">
                         <span>Payment: {order.customer.paymentMethod}</span>
+                        {order.customer.transactionId && (
+                          <span style={{ display: 'block', fontSize: '11px', color: 'var(--terracotta)', fontFamily: 'var(--font-mono)' }}>
+                            TID: {order.customer.transactionId}
+                          </span>
+                        )}
                         <small>Deliver to: {order.customer.address}, {order.customer.city}</small>
                       </div>
 
@@ -1106,6 +1111,11 @@ export function CustomerDashboard({
                   <div>
                     <span>Payment Mode:</span>
                     <strong>{invoiceOrder.customer.paymentMethod}</strong>
+                    {invoiceOrder.customer.transactionId && (
+                      <small style={{ display: 'block', color: 'var(--terracotta)', fontFamily: 'var(--font-mono)' }}>
+                        TID: {invoiceOrder.customer.transactionId}
+                      </small>
+                    )}
                   </div>
                 </div>
 
