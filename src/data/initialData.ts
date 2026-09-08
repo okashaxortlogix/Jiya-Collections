@@ -781,7 +781,7 @@ export const initialUserProfile: UserProfile = {
   phone: '+92 301 8472910',
   city: 'Islamabad',
   avatarInitial: 'H',
-  tier: 'Silver Atelier Tier II',
+  tier: 'Silver Member',
   points: 850,
   walletBalance: 2500,
   memberSince: 'March 2024',

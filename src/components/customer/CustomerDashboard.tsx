@@ -105,7 +105,7 @@ export function CustomerDashboard({
   const handleSizingSave = (e: FormEvent) => {
     e.preventDefault()
     onUpdateSizingProfile(editSizing)
-    showToast('Bespoke sizing measurements saved to your account!', 'success')
+    showToast('Body measurements saved to your account!', 'success')
   }
 
   const handleAddressSubmit = (e: FormEvent) => {
@@ -136,19 +136,27 @@ export function CustomerDashboard({
         className="luxury-client-suite"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
-        aria-label="VIP Customer Portal"
+        aria-label="Customer Account Portal"
       >
-        {/* VIP Top Client Header Banner */}
+        {/* Modern Clean Client Header */}
         <header className="client-suite-header">
+          <button
+            className="suite-close-btn"
+            onClick={onClose}
+            aria-label="Close customer portal"
+          >
+            ✕
+          </button>
+
           <div className="client-header-left">
             <div className="client-avatar-ring">
               <span className="client-avatar-monogram">{userProfile.avatarInitial}</span>
-              <span className="client-vip-crown" title="VIP Member">👑</span>
+              <span className="client-vip-crown" title="Member">✓</span>
             </div>
             <div className="client-identity">
               <div className="client-name-row">
                 <h2>{userProfile.name}</h2>
-                <span className="client-tier-pill">{userProfile.tier}</span>
+                <span className="client-tier-pill">{userProfile.tier || 'Silver Member'}</span>
               </div>
               <p className="client-meta-line">
                 {userProfile.city}, Pakistan · Member since {userProfile.memberSince} · {userProfile.phone}
@@ -157,107 +165,99 @@ export function CustomerDashboard({
           </div>
 
           <div className="client-kpi-strip">
-            <div className="kpi-pill" onClick={() => setActiveTab('orders')} title="View Orders">
+            <div className="kpi-pill" onClick={() => setActiveTab('orders')} title="View My Orders">
               <span className="kpi-pill-val">{orders.length}</span>
               <span className="kpi-pill-lbl">Orders Placed</span>
             </div>
-            <div className="kpi-pill" onClick={() => setActiveTab('loyalty')} title="View Rewards">
+            <div className="kpi-pill" onClick={() => setActiveTab('loyalty')} title="View Reward Points">
               <span className="kpi-pill-val">{userProfile.points}</span>
-              <span className="kpi-pill-lbl">Haute Points</span>
+              <span className="kpi-pill-lbl">Reward Points</span>
             </div>
-            <div className="kpi-pill" onClick={() => setActiveTab('loyalty')} title="Atelier Wallet">
+            <div className="kpi-pill" onClick={() => setActiveTab('loyalty')} title="View Wallet Balance">
               <span className="kpi-pill-val">{formatPrice(userProfile.walletBalance)}</span>
-              <span className="kpi-pill-lbl">Atelier Wallet</span>
+              <span className="kpi-pill-lbl">Wallet Balance</span>
             </div>
-            <div className="kpi-pill" onClick={() => setActiveTab('wishlist')} title="View Saved Pieces">
+            <div className="kpi-pill" onClick={() => setActiveTab('wishlist')} title="View Wishlist">
               <span className="kpi-pill-val">{wishlist.length}</span>
-              <span className="kpi-pill-lbl">Saved Pieces</span>
+              <span className="kpi-pill-lbl">Wishlist</span>
             </div>
           </div>
-
-          <button
-            className="suite-close-btn"
-            onClick={onClose}
-            aria-label="Close client suite"
-          >
-            ✕
-          </button>
         </header>
 
-        {/* Dashboard Navigation Bar */}
+        {/* Clean Modern Navigation Bar */}
         <nav className="client-suite-nav">
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            🏛 Salon Overview
+            📊 Overview
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
             onClick={() => setActiveTab('orders')}
           >
-            📦 My Orders & Tracking ({orders.length})
+            📦 My Orders ({orders.length})
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
             onClick={() => setActiveTab('wishlist')}
           >
-            ♡ Saved Pieces ({wishlist.length})
+            ❤️ Wishlist ({wishlist.length})
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'bespoke' ? 'active' : ''}`}
             onClick={() => setActiveTab('bespoke')}
           >
-            ✂ Bespoke Requests ({bespokeRequests.length})
+            ✂ Custom Stitching ({bespokeRequests.length})
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'addresses' ? 'active' : ''}`}
             onClick={() => setActiveTab('addresses')}
           >
-            📍 Address Book ({addresses.length})
+            📍 Addresses ({addresses.length})
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'loyalty' ? 'active' : ''}`}
             onClick={() => setActiveTab('loyalty')}
           >
-            👑 Haute Club Rewards
+            🎁 Rewards & Wallet
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'sizing' ? 'active' : ''}`}
             onClick={() => setActiveTab('sizing')}
           >
-            📐 Bespoke Sizing Profile
+            📏 Measurements
           </button>
           <button
             type="button"
             className={`suite-tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            ⚙ Profile & Settings
+            ⚙ Settings
           </button>
         </nav>
 
         {/* Dashboard Main Content Body */}
         <div className="client-suite-content">
-          {/* TAB 1: SALON OVERVIEW */}
+          {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="suite-overview-view">
               {/* Personalized Greeting Card */}
               <div className="welcome-banner-card">
                 <div className="wb-left">
-                  <span className="section-eyebrow">Haute Couture Client Suite</span>
-                  <h3>Salam, {userProfile.name}.</h3>
+                  <span className="section-eyebrow">Customer Account</span>
+                  <h3>Welcome back, {userProfile.name}!</h3>
                   <p>
-                    Your festive luxury wardrobe is curated with care. You currently have{' '}
-                    <strong>{orders.filter((o) => o.status !== 'Delivered').length} active order</strong> in
-                    progress at our Lahore tailoring studio.
+                    Manage your recent orders, track courier deliveries, and check your store wallet.
+                    You currently have{' '}
+                    <strong>{orders.filter((o) => o.status !== 'Delivered').length} active order</strong> in progress.
                   </p>
                 </div>
                 <div className="wb-right">
@@ -266,23 +266,23 @@ export function CustomerDashboard({
                     className="btn-primary-luxury sm"
                     onClick={() => setActiveTab('orders')}
                   >
-                    Track Live Orders →
+                    View All Orders →
                   </button>
                 </div>
               </div>
 
-              {/* Grid with Active Order & Personal Stylist */}
+              {/* Grid with Active Order & Customer Support */}
               <div className="overview-cards-grid">
                 {/* Active Order Spotlight */}
                 {orders.length > 0 && (
                   <div className="overview-card active-order-spotlight">
                     <div className="oc-header">
                       <div>
-                        <span className="oc-eyebrow">Active Atelier Order</span>
+                        <span className="oc-eyebrow">Active Order</span>
                         <h4>Order #{orders[0].id}</h4>
                       </div>
                       <span className={`status-tag ${orders[0].status.toLowerCase().replace(' ', '-')}`}>
-                        {orders[0].status}
+                        {orders[0].status === 'In Atelier' ? 'In Stitching' : orders[0].status}
                       </span>
                     </div>
 
@@ -292,9 +292,10 @@ export function CustomerDashboard({
 
                     {/* Stepper tracker */}
                     <div className="order-stepper">
-                      {['Confirmed', 'In Atelier', 'Dispatched', 'Delivered'].map((step, idx) => {
-                        const steps = ['Confirmed', 'In Atelier', 'Dispatched', 'Delivered']
-                        const isDone = steps.indexOf(orders[0].status) >= idx
+                      {['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].map((step, idx) => {
+                        const activeIdx = ['Confirmed', 'In Atelier', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(orders[0].status)
+                        const normalizedActiveIdx = activeIdx >= 2 ? (activeIdx === 2 ? 1 : activeIdx - 1) : activeIdx
+                        const isDone = normalizedActiveIdx >= idx
                         return (
                           <div key={step} className={`step-node ${isDone ? 'done' : ''}`}>
                             <span className="node-circle">{isDone ? '✓' : idx + 1}</span>
@@ -322,7 +323,7 @@ export function CustomerDashboard({
                         className="btn-primary-luxury sm"
                         onClick={() => setTrackingOrder(orders[0])}
                       >
-                        Track Courier Checkpoints 🔍
+                        Track Delivery 🚚
                       </button>
                       <button
                         type="button"
@@ -335,35 +336,35 @@ export function CustomerDashboard({
                   </div>
                 )}
 
-                {/* Personal Stylist Concierge Card */}
+                {/* Customer Support & Sizing Card */}
                 <div className="overview-card stylist-concierge-card">
                   <div className="oc-header">
                     <div>
-                      <span className="oc-eyebrow">Your Assigned Concierge</span>
-                      <h4>Amina Khan · Senior Stylist</h4>
+                      <span className="oc-eyebrow">Customer Support</span>
+                      <h4>Styling & Order Help</h4>
                     </div>
-                    <span className="stylist-verified-badge">Atelier Verified</span>
+                    <span className="stylist-verified-badge">Support Online</span>
                   </div>
 
                   <p className="stylist-bio">
-                    Dedicated to guiding your fabric choices, festive ensemble pairing, and custom
-                    measurements for upcoming weddings and Eid gatherings.
+                    Have questions about suit sizing, stitching options, or order dispatch? Our support
+                    team in Lahore is ready to assist you.
                   </p>
 
                   <div className="stylist-perks">
-                    <span>✨ Complimentary private fitting at Lahore atelier</span>
-                    <span>🧵 Custom embroidery swatches sent via courier</span>
-                    <span>💬 Direct WhatsApp line for sizing guidance</span>
+                    <span>✓ Free size and fitting guidance</span>
+                    <span>✓ Track parcels with Trax courier</span>
+                    <span>✓ 3-Day doorstep exchange guarantee</span>
                   </div>
 
                   <div className="stylist-cta-group">
                     <a
-                      href="https://wa.me/923018472910?text=Salam%20Amina,%20I%20am%20calling%20from%20my%20Jiya%20Collections%20VIP%20dashboard"
+                      href="https://wa.me/923018472910?text=Salam,%20I%20need%20assistance%20with%20my%20Jiya%20Collections%20account"
                       target="_blank"
                       rel="noreferrer"
                       className="btn-primary-luxury sm whatsapp-btn"
                     >
-                      Chat with Stylist on WhatsApp 💬
+                      Chat on WhatsApp 💬
                     </a>
                   </div>
                 </div>
@@ -373,9 +374,9 @@ export function CustomerDashboard({
               <div className="overview-lower-grid">
                 <div className="overview-card-flat">
                   <div className="oc-flat-header">
-                    <strong>📐 Saved Sizing Snapshot</strong>
+                    <strong>📐 My Saved Measurements</strong>
                     <button type="button" onClick={() => setActiveTab('sizing')} className="text-link-sm">
-                      Edit Full Measurements →
+                      Edit Measurements →
                     </button>
                   </div>
                   <div className="sizing-pills-row">
@@ -389,21 +390,21 @@ export function CustomerDashboard({
 
                 <div className="overview-card-flat">
                   <div className="oc-flat-header">
-                    <strong>💳 Atelier Store Credit & Perks</strong>
+                    <strong>💳 Store Wallet Balance</strong>
                     <button type="button" onClick={() => setActiveTab('loyalty')} className="text-link-sm">
-                      Redeem Points →
+                      View Wallet →
                     </button>
                   </div>
                   <p className="wallet-note">
-                    You have <strong>{formatPrice(userProfile.walletBalance)}</strong> store credit ready to
-                    apply automatically at checkout for any bespoke tailoring or new drop.
+                    You have <strong>{formatPrice(userProfile.walletBalance)}</strong> store wallet balance ready to
+                    apply automatically at checkout.
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 2: MY ORDERS & TRACKING */}
+          {/* TAB 2: MY ORDERS */}
           {activeTab === 'orders' && (
             <div className="suite-orders-view">
               <div className="orders-toolbar">
@@ -420,19 +421,19 @@ export function CustomerDashboard({
                     className={`filter-pill ${orderFilter === 'active' ? 'active' : ''}`}
                     onClick={() => setOrderFilter('active')}
                   >
-                    In Production & Dispatch ({orders.filter((o) => o.status !== 'Delivered').length})
+                    In Progress ({orders.filter((o) => o.status !== 'Delivered').length})
                   </button>
                   <button
                     type="button"
                     className={`filter-pill ${orderFilter === 'delivered' ? 'active' : ''}`}
                     onClick={() => setOrderFilter('delivered')}
                   >
-                    Delivered & Completed ({orders.filter((o) => o.status === 'Delivered').length})
+                    Delivered ({orders.filter((o) => o.status === 'Delivered').length})
                   </button>
                 </div>
 
                 <span className="orders-guarantee-note">
-                  🔒 All shipments covered by 3-Day Doorstep Exchange
+                  ✓ 3-Day Doorstep Exchange Guarantee on all orders
                 </span>
               </div>
 
@@ -450,7 +451,7 @@ export function CustomerDashboard({
 
                       <div className="coh-status">
                         <span className={`status-tag ${order.status.toLowerCase().replace(' ', '-')}`}>
-                          {order.status}
+                          {order.status === 'In Atelier' ? 'In Stitching' : order.status}
                         </span>
                         <strong className="order-grand-total">{formatPrice(order.total)}</strong>
                       </div>
@@ -458,9 +459,10 @@ export function CustomerDashboard({
 
                     {/* Timeline Stepper */}
                     <div className="order-stepper">
-                      {['Confirmed', 'In Atelier', 'Dispatched', 'Delivered'].map((step, idx) => {
-                        const steps = ['Confirmed', 'In Atelier', 'Dispatched', 'Delivered']
-                        const isDone = steps.indexOf(order.status) >= idx
+                      {['Confirmed', 'In Stitching', 'Dispatched', 'Delivered'].map((step, idx) => {
+                        const activeIdx = ['Confirmed', 'In Atelier', 'In Stitching', 'Dispatched', 'Delivered'].indexOf(order.status)
+                        const normalizedActiveIdx = activeIdx >= 2 ? (activeIdx === 2 ? 1 : activeIdx - 1) : activeIdx
+                        const isDone = normalizedActiveIdx >= idx
                         return (
                           <div key={step} className={`step-node ${isDone ? 'done' : ''}`}>
                             <span className="node-circle">{isDone ? '✓' : idx + 1}</span>
@@ -500,14 +502,14 @@ export function CustomerDashboard({
                           className="btn-primary-luxury sm"
                           onClick={() => setTrackingOrder(order)}
                         >
-                          Track Parcel 🚚
+                          Track Delivery 🚚
                         </button>
                         <button
                           type="button"
                           className="btn-outline-luxury sm"
                           onClick={() => setInvoiceOrder(order)}
                         >
-                          Invoice 📄
+                          View Invoice 📄
                         </button>
                         <button
                           type="button"
@@ -542,8 +544,8 @@ export function CustomerDashboard({
             <div className="suite-wishlist-view">
               <div className="wishlist-toolbar">
                 <div>
-                  <h4>Your Saved Haute Pieces ({wishlist.length})</h4>
-                  <p>Pieces reserved in your personal showroom with dynamic size selection.</p>
+                  <h4>My Saved Wishlist ({wishlist.length})</h4>
+                  <p>Items saved to your personal wishlist ready to add to your bag.</p>
                 </div>
                 {wishlist.length > 0 && (
                   <button
@@ -556,10 +558,10 @@ export function CustomerDashboard({
                         const pr = calculateSizePrice(p.price, sz)
                         onMoveWishlistToCart(p, sz, pr)
                       })
-                      showToast('All saved pieces moved to shopping cart!', 'cart')
+                      showToast('All saved items moved to cart!', 'cart')
                     }}
                   >
-                    Move All to Shopping Cart →
+                    Move All to Cart →
                   </button>
                 )}
               </div>
@@ -641,13 +643,13 @@ export function CustomerDashboard({
             </div>
           )}
 
-          {/* TAB 4: BESPOKE COUTURE REQUESTS */}
+          {/* TAB 4: CUSTOM STITCHING REQUESTS */}
           {activeTab === 'bespoke' && (
             <div className="suite-bespoke-view">
               <div className="bespoke-toolbar">
                 <div>
-                  <h4>Bespoke Tailoring Queue & Atelier Requests</h4>
-                  <p>Track your custom couture commissions hand-stitched in our Lahore studio.</p>
+                  <h4>Custom Stitching Orders ({bespokeRequests.length})</h4>
+                  <p>Track your custom stitching requests tailored to your exact measurements.</p>
                 </div>
               </div>
 
@@ -656,7 +658,7 @@ export function CustomerDashboard({
                   <div key={req.id} className="bespoke-request-card">
                     <div className="brc-top">
                       <div>
-                        <strong className="brc-ref">Commission Ref: #{req.id}</strong>
+                        <strong className="brc-ref">Order Ref: #{req.id}</strong>
                         <span className="brc-date">Submitted on {req.date}</span>
                       </div>
                       <span className="bespoke-status-tag">{req.status}</span>
@@ -683,19 +685,19 @@ export function CustomerDashboard({
 
                     {req.notes && (
                       <p className="brc-notes">
-                        <strong>Atelier Notes:</strong> {req.notes}
+                        <strong>Tailoring Notes:</strong> {req.notes}
                       </p>
                     )}
 
                     <div className="brc-actions">
                       <span>Target Delivery: {req.eventDate}</span>
                       <a
-                        href={`https://wa.me/923018472910?text=Hi%20Jiya%20Collections,%20inquiring%20about%20my%20Bespoke%20Order%20${req.id}`}
+                        href={`https://wa.me/923018472910?text=Hi%20Jiya%20Collections,%20inquiring%20about%20my%20Custom%20Order%20${req.id}`}
                         target="_blank"
                         rel="noreferrer"
                         className="btn-primary-luxury sm"
                       >
-                        Chat with Pattern Drafter on WhatsApp 💬
+                        Inquire on WhatsApp 💬
                       </a>
                     </div>
                   </div>
@@ -710,7 +712,7 @@ export function CustomerDashboard({
               <div className="address-toolbar">
                 <div>
                   <h4>Saved Delivery Addresses ({addresses.length})</h4>
-                  <p>Manage your doorstep locations across Pakistan.</p>
+                  <p>Manage your doorstep locations across Pakistan for fast checkout.</p>
                 </div>
                 <button
                   type="button"
@@ -769,17 +771,17 @@ export function CustomerDashboard({
             <div className="suite-loyalty-view">
               <div className="loyalty-hero-banner">
                 <div className="lh-copy">
-                  <span className="section-eyebrow">Haute Privileges Club</span>
-                  <h3>You Have {userProfile.points} Loyalty Points</h3>
+                  <span className="section-eyebrow">Rewards & Loyalty</span>
+                  <h3>You Have {userProfile.points} Reward Points</h3>
                   <p>
                     Earn 1 point for every Rs. 100 spent. Redeem points for instant discount vouchers on
-                    ready-to-wear drops and bespoke commissions.
+                    any order.
                   </p>
 
                   <div className="loyalty-meter-wrap">
                     <div className="meter-label-row">
-                      <span>Current: <strong>Silver Atelier Tier II</strong></span>
-                      <span>Next: <strong>Gold Salon Tier (1,000 Pts)</strong></span>
+                      <span>Current: <strong>Silver Member</strong></span>
+                      <span>Next: <strong>Gold Member (1,000 Points)</strong></span>
                     </div>
                     <div className="loyalty-bar-track">
                       <div
@@ -787,24 +789,24 @@ export function CustomerDashboard({
                         style={{ width: `${Math.min(100, (userProfile.points / 1000) * 100)}%` }}
                       />
                     </div>
-                    <small className="meter-caption">150 more points to unlock free bespoke tailoring alterations</small>
+                    <small className="meter-caption">150 more points to reach Gold Member status</small>
                   </div>
                 </div>
 
                 <div className="lh-wallet-card">
-                  <span className="wallet-badge">ATELIER STORE CREDIT</span>
+                  <span className="wallet-badge">STORE WALLET BALANCE</span>
                   <strong>{formatPrice(userProfile.walletBalance)}</strong>
-                  <p>Can be combined with seasonal promo codes.</p>
+                  <p>Available to apply automatically at checkout.</p>
                 </div>
               </div>
 
               <div className="rewards-redemption-section">
-                <h4>Instant Reward Vouchers</h4>
+                <h4>Available Discount Vouchers</h4>
                 <div className="vouchers-grid">
                   <div className="voucher-card">
                     <span className="v-pts">300 Points</span>
-                    <h5>Rs. 500 Gift Voucher</h5>
-                    <p>Valid on all Ready to Wear lawn and cotton edits.</p>
+                    <h5>Rs. 500 Discount Voucher</h5>
+                    <p>Valid on all ready-to-wear and unstitched suits.</p>
                     <button
                       type="button"
                       className="btn-primary-luxury sm"
@@ -816,8 +818,8 @@ export function CustomerDashboard({
 
                   <div className="voucher-card featured-voucher">
                     <span className="v-pts">500 Points</span>
-                    <h5>Rs. 1,000 Gift Voucher</h5>
-                    <p>Valid across all Luxury Abayas and Festive ensembles.</p>
+                    <h5>Rs. 1,000 Discount Voucher</h5>
+                    <p>Valid on all festive suits, lawn, and abayas.</p>
                     <button
                       type="button"
                       className="btn-primary-luxury sm"
@@ -829,8 +831,8 @@ export function CustomerDashboard({
 
                   <div className="voucher-card">
                     <span className="v-pts">800 Points</span>
-                    <h5>Rs. 2,000 Couture Voucher</h5>
-                    <p>Applicable to all Bespoke Custom Atelier orders.</p>
+                    <h5>Rs. 2,000 Discount Voucher</h5>
+                    <p>Applicable to all online and custom orders.</p>
                     <button
                       type="button"
                       className="btn-primary-luxury sm"
@@ -844,14 +846,13 @@ export function CustomerDashboard({
             </div>
           )}
 
-          {/* TAB 7: BESPOKE SIZING PROFILE */}
+          {/* TAB 7: SIZE & MEASUREMENTS */}
           {activeTab === 'sizing' && (
             <div className="suite-sizing-view">
               <div className="sizing-intro">
-                <h4>My Precision Body Measurements</h4>
+                <h4>My Body Measurements</h4>
                 <p>
-                  Save your exact measurements once. Our master pattern cutters reference these figures
-                  automatically whenever you order custom lengths or bespoke silhouettes.
+                  Save your exact measurements once so our tailors can stitch your suits to your exact fit.
                 </p>
               </div>
 
@@ -924,7 +925,7 @@ export function CustomerDashboard({
                     />
                   </div>
                   <div className="form-field">
-                    <label>Preferred Silhouette Fit & Ease</label>
+                    <label>Preferred Fit Style</label>
                     <select
                       value={editSizing.preferredEase}
                       onChange={(e) =>
@@ -943,7 +944,7 @@ export function CustomerDashboard({
                 </div>
 
                 <button type="submit" className="btn-primary-luxury sm">
-                  Save Sizing Profile to Atelier ✓
+                  Save Measurements ✓
                 </button>
               </form>
             </div>
@@ -1035,14 +1036,14 @@ export function CustomerDashboard({
                   <span className="tcp-dot">✓</span>
                   <div>
                     <strong>Order Confirmed & Payment Verified</strong>
-                    <p>Placed on {trackingOrder.date} · Lahore Atelier</p>
+                    <p>Placed on {trackingOrder.date} · Lahore Studio</p>
                   </div>
                 </div>
                 <div className="tracking-checkpoint done">
                   <span className="tcp-dot">✓</span>
                   <div>
-                    <strong>Hand-Stitched & Steam Pressed</strong>
-                    <p>Gulberg III Tailoring Studio · Scented & Sealed</p>
+                    <strong>Quality Inspection & Steam Pressed</strong>
+                    <p>Lahore Studio · Inspected & Packed</p>
                   </div>
                 </div>
                 <div className={`tracking-checkpoint ${['Dispatched', 'Delivered'].includes(trackingOrder.status) ? 'done' : 'current'}`}>
@@ -1055,14 +1056,14 @@ export function CustomerDashboard({
                 <div className={`tracking-checkpoint ${trackingOrder.status === 'Delivered' ? 'done' : 'pending'}`}>
                   <span className="tcp-dot">{trackingOrder.status === 'Delivered' ? '✓' : '○'}</span>
                   <div>
-                    <strong>Out for Doorstep Delivery & Signed</strong>
+                    <strong>Out for Doorstep Delivery</strong>
                     <p>Estimated by: {trackingOrder.estimatedDelivery || 'In 2-3 Days'}</p>
                   </div>
                 </div>
               </div>
 
               <button type="button" className="btn-primary-luxury full-width" onClick={() => setTrackingOrder(null)}>
-                Done
+                Close Tracking
               </button>
             </div>
           </div>
@@ -1075,7 +1076,7 @@ export function CustomerDashboard({
               <div className="smd-header">
                 <div>
                   <span className="drawer-eyebrow">Official Tax Invoice</span>
-                  <h3>Jiya Collections Atelier</h3>
+                  <h3>Jiya Collections</h3>
                   <small>NTN: 8491028-4 · Gulberg III, Lahore</small>
                 </div>
                 <button type="button" onClick={() => setInvoiceOrder(null)} className="modal-close-icon">✕</button>
@@ -1178,8 +1179,8 @@ export function CustomerDashboard({
                     <option>Size too small (Need larger size)</option>
                     <option>Kurta length adjustment required</option>
                     <option>Sleeve fitting adjustment</option>
-                    <option>Prefer alternative colorway</option>
-                    <option>Exchange for Atelier Store Credit</option>
+                    <option>Prefer alternative color or design</option>
+                    <option>Exchange for Store Wallet Balance</option>
                   </select>
                 </div>
 
@@ -1189,7 +1190,7 @@ export function CustomerDashboard({
                     rows={3}
                     value={exchangeNotes}
                     onChange={(e) => setExchangeNotes(e.target.value)}
-                    placeholder="Tell us what size or replacement piece you would like our master tailor to prepare..."
+                    placeholder="Tell us what size or replacement item you would like..."
                   />
                 </div>
 

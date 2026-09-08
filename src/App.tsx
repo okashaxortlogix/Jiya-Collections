@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import './App.css'
 
 // Types
@@ -108,6 +108,21 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
   const [promoList, setPromoList] = useState<PromoCode[]>(initialPromoList)
+
+  // Body scroll lock when any modal or drawer is open
+  useEffect(() => {
+    if (activeModal) {
+      document.body.classList.add('modal-open')
+      const originalOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.classList.remove('modal-open')
+        document.body.style.overflow = originalOverflow
+      }
+    } else {
+      document.body.classList.remove('modal-open')
+    }
+  }, [activeModal])
 
   // Toast System
   const [toasts, setToasts] = useState<Toast[]>([])
@@ -362,17 +377,19 @@ export default function App() {
       />
 
       {/* Grounded Jiya AI Stylist Floating Assistant */}
-      <StylistAssistant
-        products={products}
-        isOpen={assistantOpen}
-        onToggle={() => setAssistantOpen((o) => !o)}
-        onAddToCart={(p) => addToCart(p, 'M', 1)}
-        onQuickView={(p) => {
-          setSelectedProduct(p)
-          setActiveModal('product')
-        }}
-        formatPrice={formatPrice}
-      />
+      {!activeModal && (
+        <StylistAssistant
+          products={products}
+          isOpen={assistantOpen}
+          onToggle={() => setAssistantOpen((o) => !o)}
+          onAddToCart={(p) => addToCart(p, 'M', 1)}
+          onQuickView={(p) => {
+            setSelectedProduct(p)
+            setActiveModal('product')
+          }}
+          formatPrice={formatPrice}
+        />
+      )}
 
       {/* ================= MODALS, DRAWERS & DASHBOARD ================= */}
 

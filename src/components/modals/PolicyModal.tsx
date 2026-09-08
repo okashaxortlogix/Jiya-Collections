@@ -10,6 +10,7 @@ export function PolicyModal({ onClose }: PolicyModalProps) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="policy-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-pull-handle" aria-hidden="true" />
         <div className="drawer-header">
           <div>
             <span className="drawer-eyebrow">Client Care</span>

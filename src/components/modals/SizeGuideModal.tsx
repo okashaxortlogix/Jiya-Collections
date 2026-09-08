@@ -25,6 +25,7 @@ export function SizeGuideModal({ onClose, onAskStylist }: SizeGuideModalProps) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="size-guide-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-pull-handle" aria-hidden="true" />
         <div className="drawer-header">
           <div>
             <span className="drawer-eyebrow">Precision Fit</span>
@@ -71,6 +72,7 @@ export function SizeGuideModal({ onClose, onAskStylist }: SizeGuideModalProps) {
 
         {/* Standard Measurement Table */}
         <div className="size-table-container">
+          <div className="table-scroll-hint">← Swipe horizontally to view full size chart →</div>
           <table className="luxury-size-table">
             <thead>
               <tr>

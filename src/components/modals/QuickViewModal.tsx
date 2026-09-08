@@ -33,6 +33,7 @@ export function QuickViewModal({
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="product-quickview-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-pull-handle" aria-hidden="true" />
         <button
           className="quickview-close-btn"
           onClick={onClose}

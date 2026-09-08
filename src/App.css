@@ -2640,6 +2640,40 @@
   to { opacity: 1; }
 }
 
+/* Conceal AI Stylist floating pill whenever any modal or drawer is open */
+body.modal-open .floating-assistant-container,
+body:has(.modal-backdrop) .floating-assistant-container {
+  display: none !important;
+}
+
+.sheet-pull-handle {
+  display: none;
+}
+
+.table-scroll-hint {
+  display: none;
+}
+
+.admin-login-dialog .modal-close-icon {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--ink-charcoal);
+  z-index: 10;
+}
+
+.admin-login-dialog .modal-close-icon:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .drawer-panel {
   position: fixed;
   top: 0;
@@ -4843,14 +4877,14 @@
 
 /* Header Banner */
 .client-suite-header {
-  background: linear-gradient(135deg, #181715 0%, #24221F 65%, #2C2620 100%);
+  background: #181A18;
   color: #FFF;
-  padding: 24px 32px;
+  padding: 22px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  border-bottom: 1px solid rgba(197, 168, 110, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   flex-wrap: wrap;
 }
@@ -4858,124 +4892,140 @@
 .client-header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  padding-right: 48px;
 }
 
 .client-avatar-ring {
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 2px solid var(--gold-champagne);
+  border: 1.5px solid var(--gold-champagne);
   background: rgba(197, 168, 110, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 0 16px rgba(197, 168, 110, 0.3);
+  flex-shrink: 0;
 }
 
 .client-avatar-monogram {
   font-family: var(--font-serif);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--gold-champagne);
 }
 
 .client-vip-crown {
   position: absolute;
-  top: -7px;
-  right: -5px;
-  font-size: 14px;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2E7D32;
+  color: #FFF;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #181A18;
 }
 
 .client-name-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: 10px;
+  margin-bottom: 3px;
+  flex-wrap: wrap;
 }
 
 .client-name-row h2 {
   font-family: var(--font-serif);
-  font-size: 24px;
+  font-size: 22px;
   margin: 0;
   font-weight: 600;
+  color: #FFF;
 }
 
 .client-tier-pill {
-  background: linear-gradient(90deg, var(--gold-champagne), #E6D2A8);
-  color: #181715;
+  background: rgba(197, 168, 110, 0.18);
+  color: var(--gold-champagne);
+  border: 1px solid rgba(197, 168, 110, 0.35);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 }
 
 .client-meta-line {
   margin: 0;
-  font-size: 11.5px;
-  color: #B2ACA0;
+  font-size: 11px;
+  color: #9E988E;
   font-family: var(--font-mono);
 }
 
 .client-kpi-strip {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .kpi-pill {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 8px 14px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   cursor: pointer;
   transition: all var(--transition-fast);
+  min-width: 95px;
 }
 
 .kpi-pill:hover {
-  background: rgba(197, 168, 110, 0.15);
-  border-color: var(--gold-champagne);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
 .kpi-pill-val {
   font-family: var(--font-mono);
   font-size: 15px;
   font-weight: 600;
-  color: var(--gold-champagne);
+  color: #FFF;
 }
 
 .kpi-pill-lbl {
   font-size: 9.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #D2CCC1;
+  color: #A09A8F;
   margin-top: 2px;
 }
 
 .suite-close-btn {
-  color: #AAA396;
-  font-size: 20px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: #FFF;
+  font-size: 18px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  z-index: 20;
   transition: all var(--transition-fast);
 }
 
 .suite-close-btn:hover {
-  background: var(--terracotta);
-  color: #FFF;
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.05);
 }
 
 /* Nav tabs */
@@ -4983,32 +5033,42 @@
   background: #FFF;
   border-bottom: 1px solid var(--line-whisper);
   display: flex;
-  gap: 4px;
-  padding: 0 24px;
+  gap: 2px;
+  padding: 0 20px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   box-shadow: var(--shadow-subtle);
   flex-shrink: 0;
 }
 
+.client-suite-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .suite-tab-btn {
-  padding: 14px 16px;
+  padding: 13px 16px;
   font-size: 12.5px;
   font-weight: 500;
   color: var(--ink-muted);
-  border-bottom: 2px solid transparent;
+  border-bottom: 2.5px solid transparent;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: all var(--transition-fast);
+  background: none;
+  border-radius: 0;
 }
 
 .suite-tab-btn:hover {
   color: var(--ink-charcoal);
-  background: var(--bg-sand);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .suite-tab-btn.active {
-  color: var(--terracotta);
+  color: var(--ink-charcoal);
   border-bottom-color: var(--terracotta);
   font-weight: 600;
+  background: rgba(184, 91, 53, 0.04);
 }
 
 /* Content Area */
@@ -6295,92 +6355,247 @@
     text-overflow: ellipsis;
   }
 
+  /* --- Global Mobile Modal Backdrop & Sheet Styling --- */
+  .modal-backdrop {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    padding: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .sheet-pull-handle {
+    display: block !important;
+    width: 40px !important;
+    height: 4.5px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 4px !important;
+    margin: 8px auto 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .table-scroll-hint {
+    display: block !important;
+    font-size: 10px !important;
+    color: var(--terracotta) !important;
+    font-family: var(--font-mono) !important;
+    text-align: center !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 0.03em !important;
+  }
+
   /* --- 5. QuickView Modal (Mobile Bottom-Sheet) --- */
   .product-quickview-dialog {
     width: 100vw !important;
     max-width: 100vw !important;
     height: auto !important;
-    max-height: 94vh !important;
-    border-radius: 18px 18px 0 0 !important;
+    max-height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
     margin-top: auto !important;
     grid-template-columns: 1fr !important;
     display: flex !important;
     flex-direction: column !important;
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
     padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
     position: relative !important;
   }
 
   .quickview-close-btn {
-    top: 12px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
-    z-index: 10;
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    font-size: 16px !important;
+    z-index: 15 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .quickview-image-wrap {
-    height: 240px !important;
-    flex-shrink: 0;
+    height: 200px !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow: hidden !important;
+  }
+
+  .quickview-image-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
 
   .quickview-details {
-    padding: 16px 14px !important;
+    padding: 14px 16px calc(20px + env(safe-area-inset-bottom)) !important;
+    overflow-y: visible !important;
+  }
+
+  .qv-category-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    align-items: center !important;
+    margin-bottom: 6px !important;
   }
 
   .qv-title {
-    font-size: 19px !important;
-    line-height: 1.2;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    margin: 0 0 6px !important;
   }
 
   .qv-price-row {
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 8px 0 14px;
+    display: flex !important;
+    align-items: baseline !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin: 6px 0 10px !important;
   }
 
   .dynamic-size-price {
-    font-size: 19px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
   }
 
-  .size-rate-pill {
-    font-size: 9.5px;
-    padding: 2px 7px;
+  .qv-rating {
+    font-size: 11px !important;
+    margin-left: auto !important;
   }
 
-  .size-selector-pills {
+  .qv-description {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    margin: 0 0 12px !important;
+  }
+
+  .qv-spec-tags {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 14px !important;
+    font-size: 11px !important;
+    border-radius: 6px !important;
+  }
+
+  .qv-spec-tags span:last-child {
+    grid-column: span 2 !important;
+  }
+
+  .qv-size-section {
+    margin-bottom: 16px !important;
+  }
+
+  .qv-size-header {
+    font-size: 11.5px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .qv-size-buttons {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 6px !important;
-  }
-
-  .size-btn-pill {
-    padding: 7px 4px !important;
-    font-size: 11.5px !important;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 6px;
-  }
-
-  .size-btn-rate-sub {
-    font-size: 8.5px;
-    opacity: 0.85;
-  }
-
-  .quickview-actions {
-    flex-direction: column !important;
-    gap: 8px !important;
-    margin-top: 16px !important;
-  }
-
-  .quickview-actions .btn-primary-luxury,
-  .quickview-actions .btn-outline-luxury {
     width: 100% !important;
-    padding: 12px !important;
+  }
+
+  .qv-size-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 7px 4px !important;
+    min-height: 48px !important;
+    border-radius: 6px !important;
+    border: 1.5px solid var(--line-distinct) !important;
+    background: #FFF !important;
+    text-align: center !important;
+  }
+
+  .qv-size-btn.active {
+    background: var(--ink-charcoal) !important;
+    color: #FFF !important;
+    border-color: var(--ink-charcoal) !important;
+  }
+
+  .qv-size-btn .sz-name {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+  }
+
+  .qv-size-btn .sz-rate {
+    font-size: 8.5px !important;
+    opacity: 0.85 !important;
+    margin-top: 2px !important;
+    line-height: 1 !important;
+  }
+
+  .size-tier-hint {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    margin-top: 8px !important;
+  }
+
+  .qv-action-row {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+    margin-bottom: 14px !important;
+    width: 100% !important;
+  }
+
+  .qv-qty-stepper {
+    display: flex !important;
+    align-items: center !important;
+    height: 46px !important;
+    border-radius: 6px !important;
+    border: 1px solid var(--line-distinct) !important;
+  }
+
+  .qv-qty-stepper button {
+    padding: 0 10px !important;
+    height: 100% !important;
+    font-size: 16px !important;
+  }
+
+  .qv-qty-stepper span {
+    min-width: 24px !important;
+    font-size: 13px !important;
+  }
+
+  .qv-add-btn {
+    flex: 1 !important;
+    height: 46px !important;
+    padding: 0 12px !important;
     font-size: 12.5px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
+
+  .qv-wish-btn {
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 6px !important;
+    font-size: 18px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .qv-perks {
+    font-size: 11px !important;
+    gap: 4px !important;
+    padding-top: 8px !important;
+    border-top: 1px dashed var(--line-whisper) !important;
   }
 
   /* --- 6. Customer Dashboard Suite (Mobile Fullscreen App) --- */
@@ -6398,36 +6613,41 @@
   }
 
   .client-suite-header {
-    padding: 12px 14px !important;
+    padding: 14px !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 10px !important;
+    gap: 12px !important;
+    position: relative !important;
   }
 
+  .suite-close-btn,
   .client-suite-header .modal-close-icon {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
-    color: #FFF;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+    color: #FFF !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 50 !important;
   }
 
   .client-header-left {
     gap: 10px !important;
-    padding-right: 36px;
+    padding-right: 46px !important;
   }
 
   .client-avatar-ring {
-    width: 40px !important;
-    height: 40px !important;
-    flex-shrink: 0;
+    width: 42px !important;
+    height: 42px !important;
+    flex-shrink: 0 !important;
   }
 
   .client-avatar-monogram {
@@ -6435,68 +6655,112 @@
   }
 
   .client-name-row h2 {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
 
   .client-tier-pill {
-    font-size: 8.5px !important;
-    padding: 2px 6px !important;
+    font-size: 9px !important;
+    padding: 2px 7px !important;
   }
 
   .client-meta-line {
-    font-size: 10px !important;
+    font-size: 10.5px !important;
   }
 
   .client-kpi-strip {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 6px !important;
+    gap: 8px !important;
     width: 100% !important;
   }
 
   .kpi-pill {
-    padding: 6px 8px !important;
+    padding: 8px 10px !important;
     align-items: flex-start !important;
     border-radius: 6px !important;
   }
 
   .kpi-pill-val {
-    font-size: 13px !important;
+    font-size: 13.5px !important;
   }
 
-  .kpi-pill-label {
-    font-size: 9px !important;
+  .kpi-pill-label, .kpi-pill-lbl {
+    font-size: 9.5px !important;
   }
 
+  .client-suite-nav,
   .client-tabs-bar {
     display: flex !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
-    gap: 6px !important;
-    padding: 8px 10px !important;
+    gap: 4px !important;
+    padding: 0 10px !important;
     background: #FFF !important;
     border-bottom: 1px solid var(--line-whisper) !important;
     flex-shrink: 0 !important;
   }
 
+  .client-suite-nav::-webkit-scrollbar,
   .client-tabs-bar::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
+  .suite-tab-btn,
   .client-tab-btn {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
-    padding: 6px 11px !important;
-    font-size: 11px !important;
-    border-radius: 14px !important;
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-bottom: 2.5px solid transparent !important;
+    background: transparent !important;
   }
 
+  .suite-tab-btn.active,
+  .client-tab-btn.active {
+    color: var(--terracotta) !important;
+    border-bottom-color: var(--terracotta) !important;
+    font-weight: 600 !important;
+    background: rgba(184, 82, 53, 0.05) !important;
+  }
+
+  .client-suite-content,
   .client-suite-body {
-    padding: 12px 10px 32px !important;
+    padding: 14px 12px calc(32px + env(safe-area-inset-bottom)) !important;
     flex: 1 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
+  }
+
+  .welcome-banner-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+
+  .welcome-banner-card h3 {
+    font-size: 20px !important;
+  }
+
+  .welcome-banner-card p {
+    font-size: 12px !important;
+  }
+
+  .welcome-banner-card .wb-right button {
+    width: 100% !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    padding: 10px !important;
+  }
+
+  .overview-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 
   .suite-order-card {
@@ -6544,8 +6808,9 @@
 
   .order-actions-bar button {
     width: 100% !important;
-    padding: 8px 4px !important;
+    padding: 9px 4px !important;
     font-size: 10.5px !important;
+    white-space: nowrap !important;
     text-align: center !important;
   }
 
@@ -6569,12 +6834,23 @@
   }
 
   /* Sub-Modals (Tracking, Invoice, Exchange) */
-  .sub-modal-dialog {
-    width: 95vw !important;
-    max-width: 95vw !important;
-    max-height: 90vh !important;
+  .sub-modal-backdrop {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px !important;
+    z-index: 1100 !important;
+  }
+
+  .sub-modal-dialog, .invoice-dialog {
+    width: calc(100vw - 20px) !important;
+    max-width: 480px !important;
+    max-height: 88vh !important;
     padding: 16px 14px !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: auto !important;
   }
 
   .invoice-meta-grid {
@@ -6625,8 +6901,20 @@
   }
 
   .drawer-footer {
-    padding: 12px 14px !important;
-    padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    padding: 12px 14px calc(18px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .filter-drawer-categories, .category-filter-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .filter-pill {
+    padding: 7px 12px !important;
+    font-size: 11px !important;
+    border-radius: 16px !important;
+    white-space: normal !important;
   }
 
   /* --- 8. Checkout & Bespoke Commission Modals --- */
@@ -6637,47 +6925,369 @@
     max-height: 100dvh !important;
     border-radius: 0 !important;
     margin: 0 !important;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .checkout-header, .bespoke-dialog-header {
     padding: 14px 16px !important;
+    flex-shrink: 0 !important;
   }
 
   .checkout-form, .bespoke-form-body {
-    padding: 14px 14px 28px !important;
-    flex: 1;
-    overflow-y: auto;
+    padding: 14px 14px calc(24px + env(safe-area-inset-bottom)) !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .checkout-steps-bar {
+    display: flex !important;
     gap: 4px !important;
     margin-bottom: 14px !important;
+    width: 100% !important;
   }
 
   .step-badge {
+    flex: 1 !important;
+    text-align: center !important;
     padding: 6px 2px !important;
     font-size: 9.5px !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+  }
+
+  .checkout-form .form-grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .payment-options-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .payment-option-card {
+    padding: 10px 12px !important;
+    gap: 10px !important;
+    border-radius: 8px !important;
+  }
+
+  .pay-icon {
+    font-size: 20px !important;
+  }
+
+  .pay-text strong {
+    font-size: 12px !important;
+  }
+
+  .pay-text p {
+    font-size: 10.5px !important;
+    line-height: 1.35 !important;
+  }
+
+  .order-summary-box {
+    padding: 12px !important;
+    margin-top: 14px !important;
+    border-radius: 8px !important;
+  }
+
+  .checkout-dialog-footer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+    width: 100% !important;
+  }
+
+  .checkout-total-preview {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    font-size: 13px !important;
+  }
+
+  .checkout-dialog-footer button {
+    width: 100% !important;
+    padding: 13px !important;
+    font-size: 12.5px !important;
+    text-align: center !important;
+  }
+
+  .custom-step {
+    padding: 14px 12px !important;
+    border-radius: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .step-title {
+    font-size: 10.5px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .custom-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .custom-chip {
+    padding: 7px 11px !important;
+    font-size: 11px !important;
+    border-radius: 16px !important;
+    line-height: 1.3 !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    text-align: left !important;
   }
 
   .measurements-grid {
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
   }
 
-  .checkout-dialog-footer {
-    flex-direction: column-reverse;
-    gap: 8px;
-    align-items: stretch;
+  .measurements-grid label {
+    font-size: 10.5px !important;
+    margin-bottom: 2px !important;
   }
 
-  .checkout-dialog-footer button {
-    width: 100%;
-    text-align: center;
+  .measurements-grid input {
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
   }
 
-  /* --- 9. Atelier Concierge Chat Widget --- */
+  .bespoke-form-body button[type="submit"] {
+    padding: 14px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+    width: 100% !important;
+  }
+
+  /* --- 9. Size Guide, Policies & Contact Modals (Bottom-Sheets) --- */
+  .size-guide-dialog,
+  .policy-dialog,
+  .contact-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    max-height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin-top: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+  }
+
+  .size-calc-card,
+  .policy-calc-box {
+    padding: 14px 16px !important;
+  }
+
+  .size-calc-card h4,
+  .policy-calc-box h4 {
+    font-size: 15px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .size-calc-card p {
+    font-size: 11.5px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .calc-form .form-grid-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .calc-form input {
+    padding: 9px 10px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+  }
+
+  .calc-form button {
+    width: 100% !important;
+    padding: 11px !important;
+    font-size: 11.5px !important;
+    border-radius: 6px !important;
+    text-align: center !important;
+  }
+
+  .size-table-container {
+    padding: 14px 16px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+
+  .luxury-size-table {
+    min-width: 480px !important;
+    width: 100% !important;
+  }
+
+  .luxury-size-table th,
+  .luxury-size-table td {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  .size-dialog-footer {
+    padding: 14px 16px calc(18px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .size-dialog-footer button {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
+  .policy-calc-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .policy-calc-row .luxury-select {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+  }
+
+  .calc-result-tag {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 9px 12px !important;
+    font-size: 11.5px !important;
+    border-radius: 6px !important;
+    justify-content: center !important;
+  }
+
+  .policy-copy-sections {
+    padding: 14px 16px !important;
+  }
+
+  .policy-section {
+    margin-bottom: 14px !important;
+  }
+
+  .policy-section h3 {
+    font-size: 15px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .policy-section p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+
+  .policy-dialog > .btn-primary-luxury {
+    margin: 0 16px calc(18px + env(safe-area-inset-bottom)) !important;
+    width: calc(100% - 32px) !important;
+    padding: 12px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+  }
+
+  .contact-form-body {
+    padding: 14px 16px calc(20px + env(safe-area-inset-bottom)) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .contact-form-body .form-grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .contact-form-body input,
+  .contact-form-body select,
+  .contact-form-body textarea {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+    width: 100% !important;
+  }
+
+  .contact-form-body textarea {
+    min-height: 80px !important;
+  }
+
+  .contact-form-body button[type="submit"] {
+    padding: 13px !important;
+    font-size: 12.5px !important;
+    width: 100% !important;
+    border-radius: 6px !important;
+  }
+
+  .contact-success-box {
+    padding: 36px 20px !important;
+    text-align: center !important;
+  }
+
+  /* --- 10. Admin / Staff Login Modal --- */
+  .admin-login-dialog {
+    width: calc(100vw - 32px) !important;
+    max-width: 400px !important;
+    padding: 26px 18px 20px !important;
+    border-radius: 16px !important;
+    position: relative !important;
+    margin: auto !important;
+  }
+
+  .admin-login-dialog .modal-close-icon {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: rgba(0, 0, 0, 0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+  }
+
+  .admin-lock-seal {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .admin-login-dialog .drawer-title {
+    font-size: 18px !important;
+  }
+
+  .admin-login-sub {
+    font-size: 11px !important;
+  }
+
+  .admin-quickfill-badge {
+    padding: 8px 10px !important;
+    font-size: 10.5px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .admin-quickfill-badge code {
+    font-size: 11px !important;
+    word-break: break-all !important;
+  }
+
+  /* --- 11. Atelier Concierge Chat Widget --- */
   .floating-assistant-container {
     bottom: 16px !important;
     right: 14px !important;

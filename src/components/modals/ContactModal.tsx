@@ -24,6 +24,7 @@ export function ContactModal({ onClose, onSuccess }: ContactModalProps) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="contact-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-pull-handle" aria-hidden="true" />
         <div className="drawer-header">
           <div>
             <span className="drawer-eyebrow">Get in Touch</span>
