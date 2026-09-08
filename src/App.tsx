@@ -46,8 +46,8 @@ import { BespokeBanner } from './components/storefront/BespokeBanner'
 import { Testimonials } from './components/storefront/Testimonials'
 import { ProductDetailPage } from './components/product/ProductDetailPage'
 
-// Perfected Customer Portal & Dashboard
-import { CustomerDashboard } from './components/customer/CustomerDashboard'
+// Dedicated Customer Account Page (Daraz style)
+import { AccountPage } from './components/customer/AccountPage'
 
 // Drawers & Modals
 import { CartDrawer } from './components/modals/CartDrawer'
@@ -106,6 +106,7 @@ export default function App() {
   const [activeModal, setActiveModal] = useState<ModalType>(null)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [isAccountPage, setIsAccountPage] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
   const [promoList, setPromoList] = useState<PromoCode[]>(initialPromoList)
@@ -125,23 +126,36 @@ export default function App() {
     }
   }, [activeModal])
 
-  // Sync URL search parameter (?product=ID) for Daraz/Shopify style page navigation
+  // Sync URL search parameters (?product=ID or ?page=account) for Daraz/Shopify style page navigation
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const pId = params.get('product')
-    if (pId) {
+    const page = params.get('page')
+    if (page === 'account') {
+      setIsAccountPage(true)
+      setSelectedProduct(null)
+    } else if (pId) {
       const match = products.find((pr) => pr.id === Number(pId))
-      if (match) setSelectedProduct(match)
+      if (match) {
+        setSelectedProduct(match)
+        setIsAccountPage(false)
+      }
     }
 
     const handlePopState = () => {
       const p = new URLSearchParams(window.location.search)
+      const pg = p.get('page')
       const id = p.get('product')
-      if (id) {
+      if (pg === 'account') {
+        setIsAccountPage(true)
+        setSelectedProduct(null)
+      } else if (id) {
         const match = products.find((pr) => pr.id === Number(id))
         setSelectedProduct(match || null)
+        setIsAccountPage(false)
       } else {
         setSelectedProduct(null)
+        setIsAccountPage(false)
       }
     }
 
@@ -150,6 +164,7 @@ export default function App() {
   }, [products])
 
   const handleOpenProduct = (p: Product) => {
+    setIsAccountPage(false)
     setSelectedProduct(p)
     setActiveModal(null)
     window.history.pushState({ productId: p.id }, '', `?product=${p.id}`)
@@ -159,6 +174,20 @@ export default function App() {
   const handleCloseProduct = () => {
     setSelectedProduct(null)
     window.history.pushState({}, '', window.location.pathname)
+  }
+
+  const handleOpenAccountPage = () => {
+    setSelectedProduct(null)
+    setIsAccountPage(true)
+    setActiveModal(null)
+    window.history.pushState({ page: 'account' }, '', '?page=account')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleCloseAccountPage = () => {
+    setIsAccountPage(false)
+    window.history.pushState({}, '', window.location.pathname)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Toast System
@@ -352,17 +381,64 @@ export default function App() {
         onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
         onScrollTo={(id) => {
           if (selectedProduct) handleCloseProduct()
+          if (isAccountPage) handleCloseAccountPage()
           scrollTo(id)
         }}
-        onOpenModal={(m) => setActiveModal(m)}
+        onOpenModal={(m) => {
+          if (m === 'account') {
+            handleOpenAccountPage()
+          } else {
+            setActiveModal(m)
+          }
+        }}
         onCategorySelect={(cat) => {
           if (selectedProduct) handleCloseProduct()
+          if (isAccountPage) handleCloseAccountPage()
           setActiveCategory(cat)
         }}
       />
 
-      {/* Product Details Page (Daraz / Shopify style) OR Main Catalog */}
-      {selectedProduct ? (
+      {/* 1. SEPARATE DEDICATED ACCOUNT PAGE (Daraz style) */}
+      {isAccountPage ? (
+        <AccountPage
+          onBack={handleCloseAccountPage}
+          orders={orders}
+          wishlist={wishlist}
+          products={products}
+          addresses={addresses}
+          bespokeRequests={bespokeRequests}
+          userProfile={userProfile}
+          sizingProfile={sizingProfile}
+          onUpdateUserProfile={setUserProfile}
+          onUpdateSizingProfile={setSizingProfile}
+          onAddAddress={(newAddr) => {
+            setAddresses((prev) => [...prev, { ...newAddr, id: ++nextAddressCounter }])
+          }}
+          onSetDefaultAddress={(id) => {
+            setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })))
+          }}
+          onDeleteAddress={(id) => {
+            setAddresses((prev) => prev.filter((a) => a.id !== id))
+          }}
+          onMoveWishlistToCart={(prod, size, unitPrice) => {
+            addToCart(prod, size, 1, unitPrice)
+            setWishlist((prev) => prev.filter((id) => id !== prod.id))
+          }}
+          onToggleWishlist={toggleWishlist}
+          onReorder={(order) => {
+            order.items.forEach((item) =>
+              addToCart(item.product, item.size, item.quantity, item.unitPrice)
+            )
+            setActiveModal('cart')
+          }}
+          onRedeemVoucher={handleRedeemVoucher}
+          formatPrice={formatPrice}
+          showToast={showToast}
+          cartCount={cart.reduce((s, i) => s + i.quantity, 0)}
+          onOpenCart={() => setActiveModal('cart')}
+          onSelectProduct={handleOpenProduct}
+        />
+      ) : selectedProduct ? (
         <ProductDetailPage
           product={selectedProduct}
           products={products}
@@ -439,7 +515,7 @@ export default function App() {
       )}
 
       {/* Grounded Jiya AI Stylist Floating Assistant & Stacked Quick Cart */}
-      {!activeModal && !selectedProduct && (
+      {!activeModal && !selectedProduct && !isAccountPage && (
         <StylistAssistant
           products={products}
           isOpen={assistantOpen}
@@ -569,7 +645,7 @@ export default function App() {
             }))
             showToast(`Order #${newOrder.id} placed successfully!`, 'success')
           }}
-          onOpenAccountPortal={() => setActiveModal('account')}
+          onOpenAccountPortal={handleOpenAccountPage}
           formatPrice={formatPrice}
         />
       )}
@@ -585,46 +661,7 @@ export default function App() {
         />
       )}
 
-      {/* 7. PERFECTED CUSTOMER DASHBOARD & ACCOUNT SUITE */}
-      {activeModal === 'account' && (
-        <CustomerDashboard
-          onClose={() => setActiveModal(null)}
-          orders={orders}
-          wishlist={wishlist}
-          products={products}
-          addresses={addresses}
-          bespokeRequests={bespokeRequests}
-          userProfile={userProfile}
-          sizingProfile={sizingProfile}
-          onUpdateUserProfile={setUserProfile}
-          onUpdateSizingProfile={setSizingProfile}
-          onAddAddress={(newAddr) => {
-            setAddresses((prev) => [...prev, { ...newAddr, id: ++nextAddressCounter }])
-          }}
-          onSetDefaultAddress={(id) => {
-            setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })))
-          }}
-          onDeleteAddress={(id) => {
-            setAddresses((prev) => prev.filter((a) => a.id !== id))
-          }}
-          onMoveWishlistToCart={(prod, size, unitPrice) => {
-            addToCart(prod, size, 1, unitPrice)
-            setWishlist((prev) => prev.filter((id) => id !== prod.id))
-          }}
-          onToggleWishlist={toggleWishlist}
-          onReorder={(order) => {
-            order.items.forEach((item) =>
-              addToCart(item.product, item.size, item.quantity, item.unitPrice)
-            )
-            setActiveModal('cart')
-          }}
-          onRedeemVoucher={handleRedeemVoucher}
-          formatPrice={formatPrice}
-          showToast={showToast}
-        />
-      )}
-
-      {/* 8. INTERACTIVE SIZE GUIDE MODAL */}
+      {/* 7. INTERACTIVE SIZE GUIDE MODAL */}
       {activeModal === 'size' && (
         <SizeGuideModal
           onClose={() => setActiveModal(null)}
